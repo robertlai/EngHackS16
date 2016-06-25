@@ -30,7 +30,6 @@ module.exports = (io) ->
     router = express.Router()
 
     router.get('/environment', GetEnvironment)
-    router.get('*', GetIndex)
 
     apiRouter = require('./apiRouter')(io)
     # authRouter = require('./authRouter')
@@ -38,6 +37,8 @@ module.exports = (io) ->
     # router.use('/api', loggedIn, apiRouter)
     router.use('/api', apiRouter)
     # router.use(authRouter)
+
+    router.get('*', GetIndex)
 
     router.use (err, req, res, next) ->
         res.sendStatus(500).send(err)
