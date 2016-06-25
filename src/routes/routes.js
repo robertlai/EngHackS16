@@ -18,7 +18,7 @@ import LoginView from 'views/LoginView';
 const Routes = (
 	<Router history={browserHistory}>
 		<Route path="/login" component={LoginView}/>
-		<Route path="/test" component={MainView}/>
+		<Route path="/main" component={MainView}/>
 	</Router>
 );
 
