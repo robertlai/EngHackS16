@@ -1,0 +1,27 @@
+// Variables
+$base-font-family: Verdana, Geneva, sans-serif;
+$base-line-height: 24px;
+
+$primary-blue: #3381FF;
+$primary-red: #E60000;
+$primary-green: #5CB85C;
+$b100: #fff;
+$b97: #F7F7F7;
+$b92: #EBEBEB;
+$b90: hsl(0, 0%, 90%);
+$b85: #D9D9D9;
+$b70: #B3B3B3;
+$b42: #6B6B6B;
+$b34: #575757;
+$b30: #4D4D4D;
+$b20: #333333;
+$b12: #1F1F1F;
+$b11: #1C1C1C;
+$b0: #000000;
+$disabled: #EBEBE4;
+
+@mixin vertical-gradient ($color-top, $color-bottom) {
+    background-image: linear-gradient(to bottom, $color-top, $color-bottom); // Standard, IE10
+    background-repeat: repeat-x;
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb($color-top),argb($color-bottom))); // IE9 and down
+}
