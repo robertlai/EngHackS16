@@ -16,6 +16,7 @@
   },
   "main": "app.coffee",
   "devDependencies": {
+    "alt": "^0.18.4",
     "autoprefixer": "6.3.3",
     "babel-core": "6.7.6",
     "babel-loader": "6.2.4",
@@ -28,6 +29,7 @@
     "cookie-parser": "^1.4.1",
     "css-loader": "0.18.0",
     "del": "^2.2.0",
+    "d3": "^3.5.17",
     "eslint": "1.10.3",
     "eslint-plugin-react": "3.16.1",
     "express": "~4.13.1",
@@ -38,6 +40,7 @@
     "html-webpack-plugin": "2.16.0",
     "mongoose": "^4.1.7",
     "morgan": "^1.7.0",
+    "json-loader": "^0.5.4",
     "node-sass": "3.6.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
