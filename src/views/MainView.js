@@ -8,7 +8,12 @@ const MainView = React.createClass({
 		return (
 			<div>
 				<InputBox />
-				<Message {...test}/>
+				<Message
+					{...test}
+					selfAngle={0}
+					index={0}
+					nodeCount={1}
+				/>
 			</div>
 		);
 	}
