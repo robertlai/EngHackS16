@@ -1,15 +1,7 @@
 import React from 'react';
 import { Router, Route, Link, browserHistory } from 'react-router';
-import TestView from 'views/TestView';
-import OtherView from 'views/OtherView';
-// import {Router} from 'react-router';
-
-// import history from 'core/history';
-
-// import DefaultRedirect from 'routes/DefaultRedirect';
-// import RootView from 'views/RootView';
-// import DashboardRoutes from 'routes/DashboardRoutes';
-// import VenueRoutes from 'routes/VenueRoutes';
+import MainView from 'views/MainView';
+import LoginView from 'views/LoginView';
 
 // const Routes = (
 // 	<Router history={history} routes={{
@@ -25,9 +17,8 @@ import OtherView from 'views/OtherView';
 
 const Routes = (
 	<Router history={browserHistory}>
-		<Route path="/test" component={TestView}>
-
-		</Route>
+		<Route path="/login" component={LoginView}/>
+		<Route path="/test" component={MainView}/>
 	</Router>
 );
 
@@ -38,3 +29,6 @@ export default Routes;
 	  //   <Route path="/user/:userId" component={User}/>
 	  // </Route>
 	  // <Route path="*" component={NoMatch}/>
+
+	 //  		<Route path="/register" component={RegistrationView}/>
+		// <Route path="/login" component={LoginView}/>
