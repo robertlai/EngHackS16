@@ -7,8 +7,10 @@ module.exports = (io) ->
 
     addNewMessage = (req, res, next) ->
 
-        _newMessageParent = mongoose.Types.ObjectId('576f09ee9ad4abc82ce85beb')
-        newMessageContent = 'wef'
+        console.log req.body
+
+        _newMessageParent = mongoose.Types.ObjectId(req.body._parent)
+        newMessageContent = req.body.messageContent
         newMessageChildren = []
 
         MessageRepo.createNewMessage {
