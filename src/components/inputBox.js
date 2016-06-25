@@ -1,15 +1,19 @@
+import 'whatwg-fetch';
 import React from 'react';
-import request from 'request';
 
 const InputBox = React.createClass({
 	handleSubmit() {
-		request({
-			uri: 'http://localhost:8080/api/messages/new',
-			method: 'POST',
-			json: {
-				msg: this.refs.input.value
-			}
-		}, (err, res, body) => {
+		fetch('/api/messages/new', {
+		  method: 'POST',
+		  headers: {
+		    'Accept': 'application/json',
+		    'Content-Type': 'application/json'
+		  },
+		  body: JSON.stringify({
+		  	_parent: '576f09ee9ad4abc82ce85beb',
+		    messageContent: this.refs.input.value
+		  })
+		}).then((res) => {
 			console.log(res);
 		});
 	},
