@@ -1,4 +1,5 @@
 /* eslint no-console: 0 */
+
 const path = require('path');
 const request = require('request');
 
@@ -26,25 +27,13 @@ const compiler = webpack(webpackConfig);
 module.exports = function(app) {
 	app.use(webpackDevMiddleware(compiler, {
 		noInfo: false,
-		// display no info to console (only warnings and errors)
-
 		quiet: false,
-		// display nothing to the console
-
 		lazy: false,
-		// switch into lazy mode
-		// that means no watching, but recompilation on every request
-
 		watchOptions: {
 			aggregateTimeout: 300,
 			poll: false
 		},
-		// watch options (only lazy: false)
-
 		publicPath: webpackConfig.output.publicPath,
-		// public path to bind the middleware to
-		// use the same as in webpack
-
 		stats: {
 			colors: true,
 			hash: false,
@@ -60,12 +49,6 @@ module.exports = function(app) {
 		reload: true
 	}));
 
-	/*
-		express likes to do lookup for you when you provide a views dir.
-		because we are providing views from webpack in memory we need to
-		overwrite the view lookup which would normally throw when app.render
-		calls with file to render.
-	*/
 	var View = app.get('view');
 	View.prototype.lookup = function(filePath) {
 		return filePath;

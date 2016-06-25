@@ -8,7 +8,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const PRODUCTION = (JSON.stringify(process.env.NODE_ENV) === JSON.stringify('production'));
 const CACHE_DIR = process.env.CACHE_DIR === 'true' ? true : false;
 
-// these scripts get bundled seperately
 const vendorScripts = [
 	'lodash',
 	'react',
@@ -23,7 +22,7 @@ var plugins = [
 	}),
 	new webpack.optimize.CommonsChunkPlugin({
 		name: 'vendor',
-		minChunks: Infinity // this ensures that no other module goes into the vendor chunk
+		minChunks: Infinity
 	}),
 	new HtmlWebpackPlugin({
 		filename: 'views/index.html',

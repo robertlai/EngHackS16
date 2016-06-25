@@ -1,9 +1,5 @@
 /* eslint no-console: 0 */
 
-//	TODO: remove this function which catched unhandled exceptions.
-//	If for example an exception is thrown because the stack has overflowed
-//	then this function gets called and console attempts to be called and put more
-//	on the stack...
 process.on('uncaughtException', function (err) {
 	console.log('\n NodeJS Exception!');
 	console.log((err && err.stack) || err);

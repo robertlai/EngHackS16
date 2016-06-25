@@ -20,7 +20,7 @@ function GetEnvironment(req, res) {
 		MOBILE: !!(/mobile/i.test(req.get('user-agent')))
 	};
 
-	const javascript = 'window.MI = ' + JSON.stringify(environment) + ';';
+	const javascript = 'window.EH = ' + JSON.stringify(environment) + ';';
 	res.set('Content-Type', 'application/javascript');
 	res.send(javascript);
 }

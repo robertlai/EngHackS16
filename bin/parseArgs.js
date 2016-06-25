@@ -8,7 +8,7 @@ for(var i = 0; i < process.argv.length; i++) {
 		case '-p':
 			i++;
 			config.port = parseInt(process.argv[i]) || config.port;
-			console.log('   OVERRIDDEN PORT', config.port);
+			console.log('OVERRIDDEN PORT', config.port);
 			break;
 		case '--prod':
 		case '-prod':
