@@ -15,3 +15,10 @@ assets/styles/common.css.map
 assets/scripts/*.js
 assets/scripts/*.js.map
 assets/scripts/__sourcemaps__
+
+*.sublime-workspace
+dbcredentials.json
+/routes/*.js
+/handlers/*.js
+/data/**/*.js
+app.js
