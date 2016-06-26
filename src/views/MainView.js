@@ -36,7 +36,7 @@ const MainView = React.createClass({
 						return lookingAt._id == child._id;
 					}),
 				});
-				// this.createGraph();
+				this.createGraph();
 				socket.emit('getChildren', child._id);
 			});
 		});
@@ -101,7 +101,7 @@ const MainView = React.createClass({
 		var link = svg.select('.links').selectAll('.link');
 
 
-		var createGraph = () => {
+		this.createGraph = () => {
 
 			link = link.data(this.realJSONNodes.links);
 
@@ -137,7 +137,7 @@ const MainView = React.createClass({
 			force.start();
 		}
 
-		setInterval(createGraph, 300);
+		// setInterval(createGraph, 300);
 
 		function addMessage(e) {
 			var newMessage = {"atom": "C", "size": 12, x: e.x, y: e.y};
