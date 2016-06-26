@@ -19,11 +19,11 @@ GetIndex = (req, res) ->
     res.render 'index.html'
     return
 
-# loggedIn = (req, res, next) ->
-#     if req.isAuthenticated()
-#         next()
-#     else
-#         res.sendStatus(401)
+loggedIn = (req, res, next) ->
+    if req.isAuthenticated()
+        next()
+    else
+        res.sendStatus(401)
 
 module.exports = (io) ->
 
@@ -32,11 +32,10 @@ module.exports = (io) ->
     router.get('/environment', GetEnvironment)
 
     apiRouter = require('./apiRouter')(io)
-    # authRouter = require('./authRouter')
+    authRouter = require('./authRouter')
 
-    # router.use('/api', loggedIn, apiRouter)
-    router.use('/api', apiRouter)
-    # router.use(authRouter)
+    router.use('/api', loggedIn, apiRouter)
+    router.use('/auth', authRouter)
 
     router.get('*', GetIndex)
 

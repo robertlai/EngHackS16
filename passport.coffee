@@ -21,9 +21,6 @@ passport.use 'register', new LocalStrategy({
             done(null, false, 'That username is already taken.')
         else
             UserRepo.createNewUser {
-                firstName: req.body.firstName
-                lastName: req.body.lastName
-                email: req.body.email
                 username: username
                 password: password
             }, (err) ->
