@@ -29,14 +29,13 @@ const MainView = React.createClass({
 	},
 	componentDidMount() {
 		this.refs.inputBox.focus();
+		var c=document.createElement('canvas');
+	  	var ctx=c.getContext('2d');
+	  	ctx.font =  '20px sans-serif';
 
 		socket.on('receivedChildren', (node) => {
 			node._children.forEach((child) => {
 				socket.emit('getChildren', child._id);
-
-				var c=document.createElement('canvas');
-			  	var ctx=c.getContext('2d');
-			  	ctx.font =  '20px sans-serif';
 
 				this.realJSONNodes.nodes.push({
 					"_id": child._id,
@@ -58,13 +57,18 @@ const MainView = React.createClass({
 					this.createGraph();
 					if(self.messageSelected) {
 						self.messageSelected.classed('selectedNode', false);
+						self.messageSelected.datum().fixed = false;
 					}
 					this.messageSelected = d3.select(jquery(`#${child._id}`).get(0)).select("rect").classed('selectedNode', true);
 					this.messageSelectedId = child._id;
+					var dataTemp = self.messageSelected.datum();
+					dataTemp.fixed = true;
+					svg.transition().attr("transform", "translate(" + (-dataTemp.x+window.innerWidth/2) + ","+(-dataTemp.y+window.innerHeight/2)+")scale(1)");
 				}
 			});
 			this.createGraph();
 		});
+
 		socket.on('setGroupId', (groupId) => {
 			this.realJSONNodes.nodes.push({
 				"_id": this.props.params.cid,
@@ -72,6 +76,7 @@ const MainView = React.createClass({
 				"size": 12,
 				"x": 0,
 				"y": 0,
+				"width": ctx.measureText("root node".replace(/ +(?= )/g,'')).width + 40
 			});
 			socket.emit('getChildren', this.props.params.cid);
 		});
@@ -99,10 +104,13 @@ const MainView = React.createClass({
 		var messageClicked = function (message) {
 			if (d3.event.defaultPrevented) return;
 			if(self.messageSelected) {
-				self.messageSelected.classed('selectedNode', false);
+				self.messageSelected.classed('selectedNode', false).attr('fixed',false);
+				self.messageSelected.datum().fixed = false;
 			}
 			self.messageSelected = d3.select(this).select("rect").classed('selectedNode', true);
 			self.messageSelectedId = message._id;
+			message.fixed = true;
+			svg.transition().attr("transform", "translate(" + (-message.x+window.innerWidth/2) + ","+(-message.y+window.innerHeight/2)+")scale(1)");
 		};
 
 		var svg = d3.select('#root-message-anchor')
