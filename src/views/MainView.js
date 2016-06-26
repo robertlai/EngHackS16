@@ -45,25 +45,26 @@ const MainView = React.createClass({
 						return lookingAt._id == child._id;
 					}),
 				});
-				this.createGraph();
 				socket.emit('getChildren', child._id);
 			});
+			this.createGraph();
 		});
 		socket.on('setGroupId', (groupId) => {
 			console.log('OK');
 			this.realJSONNodes.nodes.push({
-				"_id": "576f60e8266ba3c40ab80788",
+				"_id": "576f871b8fbcefd0249f0ddb",
 				"atom": "root node",
 				"size": 12,
 				"x": 0,
 				"y": 0,
 			});
-			socket.emit('getChildren', '576f60e8266ba3c40ab80788');
+			socket.emit('getChildren', '576f871b8fbcefd0249f0ddb');
 		});
 		socket.on('notAllowed', () => {
 			console.log('NOT OK');
 		});
 		getUser().then((json) => {
+			this.user = json.user;
 			socket.emit('conversationConnect', json.user);
 		});
 
