@@ -42,7 +42,7 @@ const RegisterView = React.createClass({
 	},
 	render() {
 		return (
-			<div id="login-box">
+			<div id='auth_container'>
 				<form id='auth_form'>
 					<h1>Register</h1>
 					<Form

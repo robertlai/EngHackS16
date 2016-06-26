@@ -42,7 +42,7 @@ const LoginView = React.createClass({
 	},
 	render() {
 		return (
-			<div id="login-box">
+			<div id='auth_container'>
 				<form id='auth_form'>
 					<h1>Login</h1>
 					<Form
@@ -51,8 +51,8 @@ const LoginView = React.createClass({
 			            validationEnabled={this.state.validationEnabled}
 			          />
 					<button id="submit-button" onClick={this.handleSubmit}>Submit</button>
-				</form>
         		<Link to='/register'>Create new account</Link>
+				</form>
 			</div>
 		);
 	}
