@@ -110,7 +110,9 @@ const MainView = React.createClass({
 			self.messageSelected = d3.select(this).select("rect").classed('selectedNode', true);
 			self.messageSelectedId = message._id;
 			message.fixed = true;
-			svg.transition().attr("transform", "translate(" + (-message.x+window.innerWidth/2) + ","+(-message.y+window.innerHeight/2)+")scale(1)");
+			var x = (-message.x+window.innerWidth/2);
+			var y = (-message.y+window.innerHeight/2)
+			svg.transition().attr("transform", "translate(" + x + ","+y+")");
 		};
 
 		var svg = d3.select('#root-message-anchor')
@@ -118,6 +120,7 @@ const MainView = React.createClass({
 					.attr("width",width)
 					.attr("height",height)
 					.call(zoom)
+					.on("dblclick.zoom", null)
 					.append('g');
 
 		svg.append("g").attr("class", "links");
