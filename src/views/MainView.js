@@ -33,17 +33,50 @@ const MainView = React.createClass({
 		var ctx=c.getContext('2d');
 		ctx.font =  '20px sans-serif';
 
+		function getHeight(text) {
+			var text = jquery('<span">'+text+'</span>').css({ fontFamily: 'sans-serif','font-size':'20px' });
+			  var block = jquery('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
+
+			  var div = jquery('<div style="width:200px"></div>');
+			  div.append(text, block);
+
+			  var body = jquery('body');
+			  body.append(div);
+
+			  try {
+
+			    var result = {};
+
+			    block.css({ verticalAlign: 'baseline' });
+			    result.ascent = block.offset().top - text.offset().top;
+
+			    block.css({ verticalAlign: 'bottom' });
+			    result.height = block.offset().top - text.offset().top;
+
+			    result.descent = result.height - result.ascent;
+
+			  } finally {
+			    div.remove();
+			  }
+			  return result;
+		}
+
 		socket.on('receivedChildren', (node) => {
 			node._children.forEach((child) => {
 				socket.emit('getChildren', child._id);
 
+
+				  var widt = ctx.measureText(child.content.replace(/ +(?= )/g,'')).width;
+				  if (widt>200) {
+				  	widt = 200;
+				  }
 				this.realJSONNodes.nodes.push({
 					"_id": child._id,
 					"text": child.content,
-					"size": 12,
 					"x": 0,
 					"y": 0,
-					"width": ctx.measureText(child.content.replace(/ +(?= )/g,'')).width + 40
+					"width": widt + 40,
+					"height": getHeight(child.content).height + 20
 				});
 				this.realJSONNodes.links.push({
 					"source": _.findIndex(this.realJSONNodes.nodes, (lookingAt) => {
@@ -66,28 +99,30 @@ const MainView = React.createClass({
 			this.createGraph();
 		});
 
-		socket.on('setGroupId', (groupId) => {
+		socket.on('setRoutNode', (rootNode) => {
+			 var widt = ctx.measureText(rootNode.content.replace(/ +(?= )/g,'')).width;
+			  if (widt>200) {
+			  	widt = 200;
+			  }
 			this.realJSONNodes.nodes.push({
-				"_id": this.props.params.cid,
-				"text": "root node",
-				"size": 12,
+				"_id": rootNode._id,
+				"text": rootNode.content,
 				"x": 0,
 				"y": 0,
-				"width": ctx.measureText("root node".replace(/ +(?= )/g,'')).width + 40
+				"width": widt + 40,
+				"height": getHeight(rootNode.content).height + 20
 			});
-			socket.emit('getChildren', this.props.params.cid);
+			socket.emit('getChildren', rootNode._id);
 		});
 		// socket.on('notAllowed', () => {
 		// 	console.log('NOT OK');
 		// });
 		getUser().then((json) => {
 			this.user = json.user;
-			socket.emit('conversationConnect', json.user);
+			socket.emit('conversationConnect', json.user, this.props.params.cid);
 		});
 
 		// d3 stuff
-		var radius = d3.scale.sqrt().range([20, 30]);
-
 		var zoom = d3.behavior.zoom()
 			.scaleExtent([0.1, 1])
 			.on("zoom", function(){
@@ -149,8 +184,8 @@ const MainView = React.createClass({
 			.nodes(this.realJSONNodes.nodes)
 			.links(this.realJSONNodes.links)
 			.size([width,height])
-			.charge(-10000)
-			.linkDistance(20)
+			.charge(-25000)
+			.linkDistance(40)
 			.on("tick", tick);
 
 		force.drag()
@@ -161,6 +196,30 @@ const MainView = React.createClass({
 		var node = svg.select('.nodes').selectAll('.node');
 		var link = svg.select('.links').selectAll('.link');
 
+		function wrap(text, width, cb) {
+			var count = 1;
+		  	text.each(function() {
+			var text = d3.select(this),
+				words = text.text().split(/\s+/).reverse(),
+				word,
+				line = [],
+				y = text.attr("y"),
+				dy = parseFloat(text.attr("dy")),
+				tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+			while (word = words.pop()) {
+			  line.push(word);
+			  tspan.text(line.join(" "));
+			  if (tspan.node().getComputedTextLength() > width) {
+				line.pop();
+				tspan.text(line.join(" "));
+				line = [word];
+				tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", dy * 3 + "em").text(word);
+				++count;
+			  }
+			}
+			cb(count);
+		  });
+		}
 
 		this.createGraph = () => {
 
@@ -187,25 +246,19 @@ const MainView = React.createClass({
 					d3.select(this).append("rect")
 						.attr('rx',5)
 						.attr('ry',5)
-						.style("transform", function(d) { return 'translate(-' + d.width/ 2 + 'px,-'+radius(d.size)/2+'px)';})
+						.style("transform", function(d) { return 'translate(-' + d.width/ 2 + 'px,-23px)';})
 						.attr("width", function(d) { return d.width; })
-						.attr("height", function(d) { return radius(d.size); })
+						.attr("height", function(d) { return d.height; })
+
 					d3.select(this).append("text")
 					   .attr("dy", ".35em")
 					   .attr("text-anchor", "middle")
-					   .text(function(d) { return d.text; });
-
+					   .text(function(d) { return d.text; })
+					   .call(wrap, 200, (height) => {});
 				});
 			node.exit().remove();
 
 			force.start();
-		}
-
-		function addMessage(e) {
-			var newMessage = {"text": "C", "size": 12, x: e.x, y: e.y};
-			this.realJSONNodes.nodes.push(newMessage);
-			this.realJSONNodes.links.push({source: newMessage, target: e.index});
-			createGraph();
 		}
 
 	},
