@@ -34,7 +34,8 @@ const MainView = React.createClass({
 					.append('svg')
 					.attr("width",width)
 					.attr("height",height)
-					.call(zoom);
+					.call(zoom)
+					.append('g');
 
 		var tick = function() {
 			link.selectAll("line")
