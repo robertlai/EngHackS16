@@ -84,7 +84,7 @@ getInitialState() {
           username: field.username,
           minlength: field.minlenth,
           // errorText: errors[key],
-          onChange: this.changeHandler.bind(this),
+          onChange: this.changeHandler,
         };
 
         result.push(
