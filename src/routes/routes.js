@@ -4,8 +4,8 @@ import MainView from 'views/MainView';
 import LoginView from 'views/LoginView';
 import RegisterView from 'views/RegisterView';
 import MessageView from 'views/MessageView';
+import {getUser} from 'core/utils';
 
-import 'whatwg-fetch';
 // const Routes = (
 // 	<Router history={history} routes={{
 // 		path: '/(:lang)',
@@ -19,32 +19,15 @@ import 'whatwg-fetch';
 // );
 
 const checkAuth = (nextState, replace, callback) => {
-	fetch('/auth/getUserStatus', {
-				method: 'POST',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				credentials: 'include',
-				body: JSON.stringify({
-
-				})
-			}).then((res) => {
-				// console.log(res.json());
-				return res.json();
-				// if(res.status != 200) {
-
-				// }
-				// return res.status == 200;
-			}).then((json) => {
-				console.log(json);
-				if(!json.loggedIn) {
-					browserHistory.push('/login');
-				}
-				else {
-					callback();
-				}
-			});
+	getUser().then((json) => {
+		console.log(json);
+		if(!json.loggedIn) {
+			browserHistory.push('/login');
+		}
+		else {
+			callback();
+		}
+	});
 }
 
 const Routes = (
