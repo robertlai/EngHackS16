@@ -1,5 +1,5 @@
 html {
-	background-color: lightblue;
+	background-color: #CCFF99;
 	font-family: Arial, Verdana, Geneva, sans-serif;
 	font-color: #222222;
 }
@@ -69,7 +69,7 @@ input[type=text], input[type=password] {
 		text-align: center;
 		font-size: 14px;
 		color: white;
-			line-height: 20px;
+		line-height: 20px;
 
 		&:hover {
 			background: white;
@@ -100,5 +100,5 @@ input[type=text], input[type=password] {
 }
 
 .selectedNode {
-	fill:black;
+	fill: #FF6600;
 }
