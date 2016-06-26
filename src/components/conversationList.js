@@ -1,4 +1,5 @@
 import React from 'react';
+import {browserHistory } from 'react-router';
 
 const ConversationList = React.createClass({
 	getDefaultProps() {
@@ -6,19 +7,21 @@ const ConversationList = React.createClass({
 			conversations: []
 		};
 	},
-	handleClick(e, c) {
-		console.log(e);
-		console.log(c);
+	handleClick(id) {
+		console.log(id);
+		browserHistory.push(`/main/${id}`);
 	},
 	render() {
 		return (
 			<div id='conversation-list'>
-				{this.props.conversations.map((conversation) => {
-					<div className='conversation-list-item'>
-						<h2>{ conversation.title }</h2>
-						{ conversation.description }
-						<button onClick={this.handleClick.bind(conversation)}>Enter</button>
-					</div>
+				{this.props.conversations.map((conversation, i) => {
+					console.log(conversation);
+					return (
+						<div key={`c${i}`} className='conversation-list-item'>
+							<h2>{ conversation.title }</h2>
+							<button onClick={this.handleClick.bind(this, conversation._rootNode)}>Enter</button>
+						</div>
+					);
 				})}
 			</div>
 		);

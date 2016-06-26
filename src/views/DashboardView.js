@@ -1,6 +1,7 @@
 import React from 'react';
 import TopBar from 'components/topBar';
 import ConversationList from 'components/conversationList';
+import 'whatwg-fetch';
 
 const DashboardView = React.createClass({
 	getInitialState() {
@@ -19,8 +20,13 @@ const DashboardView = React.createClass({
 		}).then((res) => {
 			console.log(res);
 			if(res.status == 200) {
-
+				return res.json();
 			}
+		}).then((json) => {
+			console.log(json);
+			this.setState({
+				conversations: json
+			});
 		});
 	},
 	render() {
