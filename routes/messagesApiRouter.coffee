@@ -10,5 +10,4 @@ module.exports = (io) ->
     messagesApiHandler = require('../handlers/messagesApiHandler')(io)
 
     express.Router()
-        .post '/new', messagesApiHandler.addNewMessage
         .get '/all', messagesApiHandler.getChildren

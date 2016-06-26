@@ -13,6 +13,20 @@ module.exports = (io) ->
             #     socket.emit('notAllowed')
 
             socket.on 'getChildren', (_parent) ->
-                MessageRepo.getChildrenOfNode _parent, (err, children) ->
-                    console.log children
-                    socket.emit 'receivedChildren', children
+                MessageRepo.getChildrenOfNode _parent, (err, nodeWithChildren) ->
+                    socket.emit 'receivedChildren', nodeWithChildren
+
+            socket.on 'newMessage', (_newMessageParent, newMessageContent) ->
+
+                MessageRepo.createNewMessage {
+                    # _owner: req.user._id
+                    content: newMessageContent
+                    _children: []
+                }, (err, newMessage) ->
+                    return next(err) if err
+                    socket.emit 'receivedChildren', {
+                        _id: _newMessageParent
+                        _children: [newMessage]
+                    }
+                    MessageRepo.addMessageAsChild _newMessageParent, newMessage._id, (err) ->
+                        return next(err) if err
