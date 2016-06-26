@@ -67,13 +67,13 @@ const MainView = React.createClass({
 		});
 		socket.on('setGroupId', (groupId) => {
 			this.realJSONNodes.nodes.push({
-				"_id": "576f871b8fbcefd0249f0ddb",
+				"_id": "576fa7eb3892d3c03cd53e3a",
 				"text": "root node",
 				"size": 12,
 				"x": 0,
 				"y": 0,
 			});
-			socket.emit('getChildren', '576f871b8fbcefd0249f0ddb');
+			socket.emit('getChildren', '576fa7eb3892d3c03cd53e3a');
 		});
 		// socket.on('notAllowed', () => {
 		// 	console.log('NOT OK');
