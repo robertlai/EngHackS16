@@ -32,6 +32,7 @@ const MainView = React.createClass({
 
 		socket.on('receivedChildren', (node) => {
 			node._children.forEach((child) => {
+				socket.emit('getChildren', child._id);
 
 				var c=document.createElement('canvas');
 			  	var ctx=c.getContext('2d');
@@ -61,7 +62,6 @@ const MainView = React.createClass({
 					this.messageSelected = d3.select(jquery(`#${child._id}`).get(0)).select("rect").classed('selectedNode', true);
 					this.messageSelectedId = child._id;
 				}
-				socket.emit('getChildren', child._id);
 			});
 			this.createGraph();
 		});
