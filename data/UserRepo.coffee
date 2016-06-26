@@ -6,7 +6,12 @@ createNewUser = (options, next) ->
         .encryptPassword()
         .save next
 
+getUserByUserName = (username, next) ->
+    User.findOne { username: username },
+    next
+
 
 module.exports = {
     createNewUser: createNewUser
+    getUserByUserName: getUserByUserName
 }
