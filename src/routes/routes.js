@@ -35,7 +35,8 @@ const Routes = (
 	<Router history={browserHistory}>
 		<Route path="/login" component={LoginView}/>
 		<Route path="/register" component={RegisterView}/>
-		<Route path="/main" component={DashboardView} onEnter={checkAuth}/>
+		<Route path='/dashboard' component={DashboardView} onEnter={checkAuth}/>
+		<Route path="/main" component={MainView} onEnter={checkAuth}/>
 	</Router>
 );
 

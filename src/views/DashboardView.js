@@ -10,7 +10,6 @@ const DashboardView = React.createClass({
 		return (
 			<div id='dashboard-container'>
 				<TopBar/>
-				<MainView/>
 			</div>
 		);
 	}
