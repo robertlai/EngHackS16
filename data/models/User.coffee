@@ -4,12 +4,9 @@ bcrypt = require('bcrypt-nodejs')
 
 
 userSchema = new Schema({
-    firstName: String
-    lastName: String
-    email: String
     username: String
     password: String
-    _ownedGroups: [{ type: Schema.Types.ObjectId, ref: 'conversation' }]
+    _ownedConversations: [{ type: Schema.Types.ObjectId, ref: 'message' }]
 })
 
 userSchema.methods.encryptPassword = ->

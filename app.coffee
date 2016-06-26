@@ -42,11 +42,23 @@ app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, assetsroot)))
 
 
+app.use(session({
+    secret: 'ilovescotchscotchyscotchscotch'
+    cookie: {
+        maxAge: 30 * 60 * 1000
+    }
+    rolling: true
+    resave: false
+    saveUninitialized: false
+}))
+
+require('./passport')
+app.use(passport.initialize())
+app.use(passport.session())
+
+
+require('./socketManager')(io)
 router = require('./routes/router')(io)
 app.use(router)
 
-# routes(app)
-
 http.listen(config.port)
-
-module.exports = http # not sure if I need this :)

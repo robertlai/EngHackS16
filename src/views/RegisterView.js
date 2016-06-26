@@ -3,9 +3,9 @@ import React from 'react';
 import {Link, browserHistory } from 'react-router';
 
 import Form from 'forms/Form';
-import SigninFormSchema from 'forms/schemas/SigninFormSchema';
+import SignupFormSchema from 'forms/schemas/SignupFormSchema';
 
-const LoginView = React.createClass({
+const RegisterView = React.createClass({
 	getInitialState() {
 		return {
 			validationEnabled: false
@@ -19,7 +19,7 @@ const LoginView = React.createClass({
 	    if(form.validate()) {
 	      const { username, password } = form.getValue();
 
-	      fetch('/auth/login', {
+	      fetch('/auth/register', {
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json',
@@ -31,7 +31,7 @@ const LoginView = React.createClass({
 				})
 			}).then((res) => {
 				if(res.status == 200) {
-					browserHistory.push('/main');
+					browserHistory.push('/login');
 				}
 			});
 	    }
@@ -44,18 +44,18 @@ const LoginView = React.createClass({
 		return (
 			<div id='auth_container'>
 				<form id='auth_form'>
-					<h1>Login</h1>
+					<h1>Register</h1>
 					<Form
 			            ref='form'
-			            schema={SigninFormSchema}
+			            schema={SignupFormSchema}
 			            validationEnabled={this.state.validationEnabled}
 			          />
 					<button id="submit-button" onClick={this.handleSubmit}>Submit</button>
-        		<Link to='/register'>Create new account</Link>
+        		<Link to='/login'>Login</Link>
 				</form>
 			</div>
 		);
 	}
 });
 
-export default LoginView;
+export default RegisterView;
