@@ -18,7 +18,7 @@ import 'whatwg-fetch';
 // 	}}/>
 // );
 
-function checkAuth(nextState, replace, callback) {
+const checkAuth = (nextState, replace, callback) => {
 	fetch('/auth/getUserStatus', {
 				method: 'POST',
 				headers: {
@@ -39,6 +39,9 @@ function checkAuth(nextState, replace, callback) {
 				console.log(json);
 				if(!json.loggedIn) {
 					browserHistory.push('/login');
+				}
+				else {
+					callback();
 				}
 			});
 }
