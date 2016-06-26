@@ -51,8 +51,8 @@ const RegisterView = React.createClass({
 			            validationEnabled={this.state.validationEnabled}
 			          />
 					<button id="submit-button" onClick={this.handleSubmit}>Submit</button>
-				</form>
         		<Link to='/login'>Login</Link>
+				</form>
 			</div>
 		);
 	}

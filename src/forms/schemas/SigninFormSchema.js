@@ -4,7 +4,7 @@ const SigninFormSchema = {
     type: 'text',
     placeholder: 'Username',
     defaultValue: '',
-    required: true,
+    required: true
   },
   password: {
     field: 'text',
