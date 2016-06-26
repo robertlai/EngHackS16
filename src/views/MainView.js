@@ -65,7 +65,7 @@ const MainView = React.createClass({
 			node._children.forEach((child) => {
 				socket.emit('getChildren', child._id);
 
-			
+
 				  var widt = ctx.measureText(child.content.replace(/ +(?= )/g,'')).width;
 				  if (widt>200) {
 				  	widt = 200;
@@ -259,13 +259,6 @@ const MainView = React.createClass({
 			node.exit().remove();
 
 			force.start();
-		}
-
-		function addMessage(e) {
-			var newMessage = {"text": "C", "size": 12, x: e.x, y: e.y};
-			this.realJSONNodes.nodes.push(newMessage);
-			this.realJSONNodes.links.push({source: newMessage, target: e.index});
-			createGraph();
 		}
 
 	},
