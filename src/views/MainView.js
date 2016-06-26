@@ -6,6 +6,7 @@ import d3 from 'd3';
 import jquery from 'jquery';
 import io from 'socket.io-client';
 import {getUser} from 'core/utils';
+import _ from 'lodash';
 
 var socket = require('socket.io-client')();
 
@@ -13,17 +14,42 @@ const MainView = React.createClass({
 	shouldComponentUpdate() {
 		return false;
 	},
+	realJSONNodes: {
+		nodes: [],
+		links: []
+	},
 	componentDidMount() {
-		console.log(socket);
-		socket.on('receivedChildren', (children) => {
-			children.forEach((child) => {
+		socket.on('receivedChildren', (node) => {
+			node._children.forEach((child) => {
+				this.realJSONNodes.nodes.push({
+					"_id": child._id,
+					"atom": child.content,
+					"size": 12,
+					"x": 0,
+					"y": 0,
+				});
+				this.realJSONNodes.links.push({
+					"source": _.findIndex(this.realJSONNodes.nodes, (lookingAt) => {
+						return lookingAt._id == node._id;
+					}),
+					"target": _.findIndex(this.realJSONNodes.nodes, (lookingAt) => {
+						return lookingAt._id == child._id;
+					}),
+				});
+				// this.createGraph();
 				socket.emit('getChildren', child._id);
-				console.log(child.content);
 			});
 		});
 		socket.on('setGroupId', (groupId) => {
 			console.log('OK');
-			socket.emit('getChildren', '576f5d5ddde7cca0315ca322');
+			this.realJSONNodes.nodes.push({
+				"_id": "576f60e8266ba3c40ab80788",
+				"atom": "root node",
+				"size": 12,
+				"x": 0,
+				"y": 0,
+			});
+			socket.emit('getChildren', '576f60e8266ba3c40ab80788');
 		});
 		socket.on('notAllowed', () => {
 			console.log('NOT OK');
@@ -39,19 +65,6 @@ const MainView = React.createClass({
 		var zoom = d3.behavior.zoom()
 		    .scaleExtent([0.1, 1])
 		    .on("zoom", zoomed);
-
-		var fakeJSONfile = {};
-		  fakeJSONfile.nodes = [
-		    {"atom": "C", "size": 12},
-		    {"atom": "C", "size": 12},
-		    {"atom": "C", "size": 12},
-		    {"atom": "N", "size": 14},
-		  ];
-		  fakeJSONfile.links = [{"source": 0, "target": 1},
-		    {"source": 1, "target": 2},
-		    {"source": 1, "target": 3},
-		    {"source": 2, "target": 3}
-		]
 
 		var width = window.innerWidth;
 		var height = window.innerHeight;
@@ -77,8 +90,8 @@ const MainView = React.createClass({
 		}
 
 		var force = d3.layout.force()
-			.nodes(fakeJSONfile.nodes)
-			.links(fakeJSONfile.links)
+			.nodes(this.realJSONNodes.nodes)
+			.links(this.realJSONNodes.links)
 			.size([width,height])
 			.charge(-10000)
 			.linkDistance(50)
@@ -87,11 +100,10 @@ const MainView = React.createClass({
 		var node = svg.select('.nodes').selectAll('.node');
 		var link = svg.select('.links').selectAll('.link');
 
-		createGraph();
 
-		function createGraph() {
+		var createGraph = () => {
 
-			link = link.data(fakeJSONfile.links);
+			link = link.data(this.realJSONNodes.links);
 
 			link.enter()
 				.append('g')
@@ -101,7 +113,7 @@ const MainView = React.createClass({
 		  		});
 			link.exit().remove();
 
-			node = node.data(fakeJSONfile.nodes);
+			node = node.data(this.realJSONNodes.nodes);
 
 			node.enter()
 				.append('g')
@@ -125,10 +137,12 @@ const MainView = React.createClass({
 			force.start();
 		}
 
+		setInterval(createGraph, 300);
+
 		function addMessage(e) {
 			var newMessage = {"atom": "C", "size": 12, x: e.x, y: e.y};
-		  	fakeJSONfile.nodes.push(newMessage);
-		 	fakeJSONfile.links.push({source: newMessage, target: e.index});
+		  	this.realJSONNodes.nodes.push(newMessage);
+		 	this.realJSONNodes.links.push({source: newMessage, target: e.index});
 	  		createGraph();
 		}
 
