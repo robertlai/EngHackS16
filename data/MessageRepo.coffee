@@ -10,6 +10,10 @@ addMessageAsChild = (_parent, _messageToAdd, next) ->
         { $addToSet: { _children: _messageToAdd } },
         next
 
+getNode = (_nodeId, next) ->
+    Message.findOne({ _id: _nodeId })
+        .exec next
+
 getChildrenOfNode = (_parent, next) ->
     Message.findOne({ _id: _parent })
         .populate('_children')
@@ -19,5 +23,6 @@ getChildrenOfNode = (_parent, next) ->
 module.exports = {
     createNewMessage: createNewMessage
     addMessageAsChild: addMessageAsChild
+    getNode: getNode
     getChildrenOfNode: getChildrenOfNode
 }
