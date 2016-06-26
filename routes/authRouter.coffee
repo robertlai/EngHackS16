@@ -4,6 +4,18 @@ passport = require('passport')
 
 module.exports = express.Router()
 
+.post '/getUserStatus', (req, res, next) ->
+    currentUser = req.user
+    user = if currentUser
+        currentUser.password = undefined
+        currentUser
+    else
+        null
+    res.json({
+        loggedIn: req.isAuthenticated()
+        user: user
+    })
+
 .post '/login', (req, res, next) ->
     passport.authenticate('login', (error, user, message) ->
         if error?
