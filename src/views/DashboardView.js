@@ -1,15 +1,13 @@
 import React from 'react';
 import TopBar from 'components/topBar';
-import MainView from 'views/MainView';
+import ConversationList from 'components/conversationList';
 
 const DashboardView = React.createClass({
-	componentDidMount() {
-
-	},
 	render() {
 		return (
 			<div id='dashboard-container'>
 				<TopBar/>
+				<ConversationList/>
 			</div>
 		);
 	}

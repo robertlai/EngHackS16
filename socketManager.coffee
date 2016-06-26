@@ -16,17 +16,20 @@ module.exports = (io) ->
                 MessageRepo.getChildrenOfNode _parent, (err, nodeWithChildren) ->
                     socket.emit 'receivedChildren', nodeWithChildren
 
-            socket.on 'newMessage', (_newMessageParent, newMessageContent) ->
+            socket.on 'newMessage', (_user, _newMessageParent, newMessageContent) ->
 
                 MessageRepo.createNewMessage {
-                    # _owner: req.user._id
+                    _owner: _user
                     content: newMessageContent
                     _children: []
                 }, (err, newMessage) ->
                     return next(err) if err
-                    socket.emit 'receivedChildren', {
+
+                    io.emit 'receivedChildren', {
                         _id: _newMessageParent
+                        _owner: _user
                         _children: [newMessage]
+                        doIt: true
                     }
                     socket.emit 'newFocus', newMessage._id
                     MessageRepo.addMessageAsChild _newMessageParent, newMessage._id, (err) ->
