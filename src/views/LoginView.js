@@ -14,12 +14,13 @@ const LoginView = React.createClass({
 	handleSubmit(e) {
 		e.preventDefault();
 
-	    const { form } = this.refs;
+		const { form } = this.refs;
 
-	    if(form.validate()) {
-	      const { username, password } = form.getValue();
+		if(form.validate()) {
+		  const { username, password } = form.getValue();
 
-	      fetch('/auth/login', {
+			fetch('/auth/login', {
+				credentials: 'same-origin',
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json',
@@ -35,11 +36,11 @@ const LoginView = React.createClass({
 					browserHistory.push('/main');
 				}
 			});
-	    }
+		}
 
-	    this.setState({
-	      validationEnabled: true,
-	    });
+		this.setState({
+		  validationEnabled: true,
+		});
 	},
 	render() {
 		return (
@@ -47,12 +48,12 @@ const LoginView = React.createClass({
 				<form id='auth_form'>
 					<h1>Login</h1>
 					<Form
-			            ref='form'
-			            schema={SigninFormSchema}
-			            validationEnabled={this.state.validationEnabled}
-			          />
+						ref='form'
+						schema={SigninFormSchema}
+						validationEnabled={this.state.validationEnabled}
+					  />
 					<button id="submit-button" onClick={this.handleSubmit}>Submit</button>
-        		<Link to='/register'>Create new account</Link>
+				<Link to='/register'>Create new account</Link>
 				</form>
 			</div>
 		);
