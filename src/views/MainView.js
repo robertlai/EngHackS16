@@ -33,36 +33,40 @@ const MainView = React.createClass({
 		var ctx=c.getContext('2d');
 		ctx.font =  '20px sans-serif';
 
+		function getHeight(text) {
+			var text = jquery('<span">'+text+'</span>').css({ fontFamily: 'sans-serif','font-size':'20px' });
+			  var block = jquery('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
+
+			  var div = jquery('<div style="width:200px"></div>');
+			  div.append(text, block);
+
+			  var body = jquery('body');
+			  body.append(div);
+
+			  try {
+
+			    var result = {};
+
+			    block.css({ verticalAlign: 'baseline' });
+			    result.ascent = block.offset().top - text.offset().top;
+
+			    block.css({ verticalAlign: 'bottom' });
+			    result.height = block.offset().top - text.offset().top;
+
+			    result.descent = result.height - result.ascent;
+
+			  } finally {
+			    div.remove();
+			  }
+			  return result;
+		}
+
 		socket.on('receivedChildren', (node) => {
 			node._children.forEach((child) => {
 				socket.emit('getChildren', child._id);
 
-				  var text = jquery('<span">'+child.content+'</span>').css({ fontFamily: 'sans-serif','font-size':'20px' });
-				  var block = jquery('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
-
-				  var div = jquery('<div style="width:200px"></div>');
-				  div.append(text, block);
-
-				  var body = jquery('body');
-				  body.append(div);
-
-				  try {
-
-				    var result = {};
-
-				    block.css({ verticalAlign: 'baseline' });
-				    result.ascent = block.offset().top - text.offset().top;
-
-				    block.css({ verticalAlign: 'bottom' });
-				    result.height = block.offset().top - text.offset().top;
-
-				    result.descent = result.height - result.ascent;
-
-				  } finally {
-				    div.remove();
-				  }
-
-				  var widt = ctx.measureText(child.content.replace(/ +(?= )/g,'')).width + 40;
+			
+				  var widt = ctx.measureText(child.content.replace(/ +(?= )/g,'')).width;
 				  if (widt>200) {
 				  	widt = 200;
 				  }
@@ -71,8 +75,8 @@ const MainView = React.createClass({
 					"text": child.content,
 					"x": 0,
 					"y": 0,
-					"width": widt,
-					"height": result.height + 20
+					"width": widt + 40,
+					"height": getHeight(child.content).height + 20
 				});
 				this.realJSONNodes.links.push({
 					"source": _.findIndex(this.realJSONNodes.nodes, (lookingAt) => {
@@ -96,12 +100,17 @@ const MainView = React.createClass({
 		});
 
 		socket.on('setRoutNode', (rootNode) => {
+			 var widt = ctx.measureText(rootNode.content.replace(/ +(?= )/g,'')).width;
+			  if (widt>200) {
+			  	widt = 200;
+			  }
 			this.realJSONNodes.nodes.push({
 				"_id": rootNode._id,
 				"text": rootNode.content,
 				"x": 0,
 				"y": 0,
-				"width": ctx.measureText(rootNode.content.replace(/ +(?= )/g,'')).width + 40
+				"width": widt + 40,
+				"height": getHeight(rootNode.content).height + 20
 			});
 			socket.emit('getChildren', rootNode._id);
 		});
@@ -175,8 +184,8 @@ const MainView = React.createClass({
 			.nodes(this.realJSONNodes.nodes)
 			.links(this.realJSONNodes.links)
 			.size([width,height])
-			.charge(-10000)
-			.linkDistance(20)
+			.charge(-25000)
+			.linkDistance(40)
 			.on("tick", tick);
 
 		force.drag()
