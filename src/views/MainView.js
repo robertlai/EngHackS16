@@ -34,7 +34,7 @@ const MainView = React.createClass({
 			node._children.forEach((child) => {
 				this.realJSONNodes.nodes.push({
 					"_id": child._id,
-					"atom": child.content,
+					"text": child.content,
 					"size": 12,
 					"x": 0,
 					"y": 0,
@@ -54,7 +54,7 @@ const MainView = React.createClass({
 		socket.on('setGroupId', (groupId) => {
 			this.realJSONNodes.nodes.push({
 				"_id": "576f871b8fbcefd0249f0ddb",
-				"atom": "root node",
+				"text": "root node",
 				"size": 12,
 				"x": 0,
 				"y": 0,
@@ -159,7 +159,7 @@ const MainView = React.createClass({
 					d3.select(this).append("text")
 					   .attr("dy", ".35em")
 					   .attr("text-anchor", "middle")
-					   .text(function(d) { return d.atom; });
+					   .text(function(d) { return d.text; });
 				});
 			node.exit().remove();
 
@@ -167,7 +167,7 @@ const MainView = React.createClass({
 		}
 
 		function addMessage(e) {
-			var newMessage = {"atom": "C", "size": 12, x: e.x, y: e.y};
+			var newMessage = {"text": "C", "size": 12, x: e.x, y: e.y};
 			this.realJSONNodes.nodes.push(newMessage);
 			this.realJSONNodes.links.push({source: newMessage, target: e.index});
 			createGraph();
