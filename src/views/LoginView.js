@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 import React from 'react';
-import {Link } from 'react-router';
+import {Link, browserHistory } from 'react-router';
 
 import Form from 'forms/Form';
 import SigninFormSchema from 'forms/schemas/SigninFormSchema';
@@ -30,9 +30,8 @@ const LoginView = React.createClass({
 					password: password
 				})
 			}).then((res) => {
-				console.log(res);
-				if(res.status != 200) {
-
+				if(res.status == 200) {
+					browserHistory.push('/main');
 				}
 			});
 	    }
