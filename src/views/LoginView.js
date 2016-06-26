@@ -18,7 +18,6 @@ const LoginView = React.createClass({
 
 	    if(form.validate()) {
 	      const { username, password } = form.getValue();
-	      const { dispatch } = this.props;
 
 	      fetch('/auth/login', {
 				method: 'POST',
@@ -52,9 +51,9 @@ const LoginView = React.createClass({
 			            schema={SigninFormSchema}
 			            validationEnabled={this.state.validationEnabled}
 			          />
-					<button id="submit-button" onClick={this.handleSubmit}/>
+					<button id="submit-button" onClick={this.handleSubmit}>Submit</button>
 				</form>
-        		<Link to='/sign_up'>Create new account</Link>
+        		<Link to='/register'>Create new account</Link>
 			</div>
 		);
 	}

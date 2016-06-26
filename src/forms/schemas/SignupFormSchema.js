@@ -7,14 +7,14 @@ const SignupFormSchema = {
     required: true,
     username: true,
   },
-  email: {
-    field: 'text',
-    type: 'text',
-    placeholder: 'Email',
-    defaultValue: '',
-    required: true,
-    email: true,
-  },
+  // email: {
+  //   field: 'text',
+  //   type: 'text',
+  //   placeholder: 'Email',
+  //   defaultValue: '',
+  //   required: true,
+  //   email: true,
+  // },
   password: {
     field: 'text',
     type: 'password',

@@ -81,6 +81,8 @@ getInitialState() {
           required: field.required,
           email: field.email,
           name: key,
+          username: field.username,
+          minlength: field.minlenth,
           // errorText: errors[key],
           onChange: this.changeHandler.bind(this),
         };
