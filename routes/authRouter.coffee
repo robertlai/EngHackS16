@@ -13,7 +13,7 @@ module.exports = express.Router()
     else
         null
     res.json({
-        loggedIn: true # req.isAuthenticated()
+        loggedIn: req.isAuthenticated()
         user: user
     })
 

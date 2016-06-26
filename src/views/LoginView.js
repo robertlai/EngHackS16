@@ -20,7 +20,6 @@ const LoginView = React.createClass({
 		  const { username, password } = form.getValue();
 
 			fetch('/auth/login', {
-				credentials: 'same-origin',
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json',
