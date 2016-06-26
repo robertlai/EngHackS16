@@ -1,19 +1,24 @@
 import React from 'react';
 
 const ConversationList = React.createClass({
-	getInitialState() {
+	getDefaultProps() {
 		return {
 			conversations: []
 		};
 	},
-	componentDidMount() {
-
+	handleClick(e, c) {
+		console.log(e);
+		console.log(c);
 	},
 	render() {
 		return (
 			<div id='conversation-list'>
-				{this.state.conversations.map((conversation) => {
-
+				{this.props.conversations.map((conversation) => {
+					<div className='conversation-list-item'>
+						<h2>{ conversation.title }</h2>
+						{ conversation.description }
+						<button onClick={this.handleClick.bind(conversation)}>Enter</button>
+					</div>
 				})}
 			</div>
 		);

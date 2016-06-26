@@ -17,9 +17,13 @@ const TopBar = React.createClass({
 				}
 			});
 	},
+	handleNewConversation() {
+		browserHistory.push('/create');
+	},
 	render() {
 		return (
 			<div id='topbar'>
+				<button onClick={this.handleNewConversation}>Create a new conversation</button>
 				<button onClick={this.handleLogout}>Logout</button>
 			</div>
 		);

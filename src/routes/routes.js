@@ -5,6 +5,7 @@ import DashboardView from 'views/DashboardView';
 import LoginView from 'views/LoginView';
 import RegisterView from 'views/RegisterView';
 import MessageView from 'views/MessageView';
+import CreateView from 'views/CreateView';
 import {getUser} from 'core/utils';
 
 // const Routes = (
@@ -37,6 +38,7 @@ const Routes = (
 		<Route path="/register" component={RegisterView}/>
 		<Route path='/dashboard' component={DashboardView} onEnter={checkAuth}/>
 		<Route path="/main" component={MainView} onEnter={checkAuth}/>
+		<Route path="/create" component={CreateView} onEnter={checkAuth}/>
 	</Router>
 );
 
