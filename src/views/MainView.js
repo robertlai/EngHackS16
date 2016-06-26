@@ -23,7 +23,7 @@ const MainView = React.createClass({
 	addNewMessage() {
 		let text = this.refs.inputBox.value.trim();
 		if(this.messageSelectedId && text != '') {
-			socket.emit('newMessage', this.messageSelectedId, text);
+			socket.emit('newMessage', this.messageSelectedId, text, this.user._id);
 			this.refs.inputBox.value = '';
 		}
 	},
@@ -139,6 +139,9 @@ const MainView = React.createClass({
 			node.enter()
 				.append('g')
 				.attr('class','node')
+				.attr('id', (d) => {
+					return d._id;
+				})
 				.on("click", messageClicked)
 				.each(function(d) {
 					d3.select(this).append("rect")
