@@ -154,7 +154,7 @@ const MainView = React.createClass({
 					d3.select(this).append("rect")
 						.attr('rx',5)
 						.attr('ry',5)
-						.style("transform", function(d) { return 'translate(-' + radius(d.size) / 2 + 'px)';})
+						.style("transform", function(d) { return 'translate(-' + radius(d.size) * 5/ 2 + 'px,-'+radius(d.size)/2+'px)';})
 						.attr("width", function(d) { return radius(d.size)*5; })
 						.attr("height", function(d) { return radius(d.size); })
 
