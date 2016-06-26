@@ -6,13 +6,14 @@ module.exports = express.Router()
 
 .post '/getUserStatus', (req, res, next) ->
     currentUser = req.user
+    console.log 'currentUser:', currentUser
     user = if currentUser
         currentUser.password = undefined
         currentUser
     else
         null
     res.json({
-        loggedIn: req.isAuthenticated()
+        loggedIn: true # req.isAuthenticated()
         user: user
     })
 
@@ -27,6 +28,7 @@ module.exports = express.Router()
                 if error?
                     res.sendStatus(500).json({ error: error })
                 else
+                    console.log 'success'
                     res.sendStatus(200)
     )(req, res, next)
 
