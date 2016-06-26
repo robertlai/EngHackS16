@@ -31,7 +31,7 @@ const MainView = React.createClass({
 
 		var fakeJSONfile = {};
 		  fakeJSONfile.nodes = [
-		    {"atom": "Hi I am Calvin!! I am going to fail 213Hi I am Calvin!! I am going to fail 213Hi I am Calvin!! I am going to fail 213Hi I am Calvin!! I am going to fail 213Hi I am Calvin!! I am going to fail 213Hi I am Calvin!! I am going to fail 213Hi I am Calvin!! I am going to fail 213Hi I am Calvin!! I am going to fail 213", "size": 12},
+		    {"atom": "C", "size": 12},
 		    {"atom": "C", "size": 12},
 		    {"atom": "C", "size": 12},
 		    {"atom": "N", "size": 14},
@@ -84,8 +84,6 @@ const MainView = React.createClass({
 				.attr('class','link')
 				.each(function(d) {
 		  			d3.select(this).insert("line", ".node")
-		  				.style("stroke-width", "3px");
-
 		  		});
 			link.exit().remove();
 
@@ -102,7 +100,6 @@ const MainView = React.createClass({
 						.style("transform", function(d) { return 'translate(-' + radius(d.size) / 2 + 'px)';})
 						.attr("width", function(d) { return radius(d.size)*5; })
 						.attr("height", function(d) { return radius(d.size); })
-						.style("fill", function(d) { return color(d.atom); });
 
 					d3.select(this).append("text")
 				       .attr("dy", ".35em")

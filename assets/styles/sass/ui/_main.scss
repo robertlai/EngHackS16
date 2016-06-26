@@ -44,10 +44,18 @@ input[type=text], input[type=password] {
 
 .node {
 	draggable: false;
+	fill: $primary-green;
+}
+
+.node text {
+  font: 20px sans-serif;
+  fill: white;
 }
 
 .link line {
-  stroke: #696969;
+  	stroke: $darktreebark;
+  	stroke-width: 30px;
+  	stroke-linecap: round;
 }
 
 #root-message-anchor svg{
