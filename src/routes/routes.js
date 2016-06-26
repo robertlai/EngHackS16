@@ -22,7 +22,6 @@ import {getUser} from 'core/utils';
 
 const checkAuth = (nextState, replace, callback) => {
 	getUser().then((json) => {
-		console.log(json);
 		if(!json.loggedIn) {
 			browserHistory.push('/login');
 		}

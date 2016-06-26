@@ -8,14 +8,12 @@ const ConversationList = React.createClass({
 		};
 	},
 	handleClick(id) {
-		console.log(id);
 		browserHistory.push(`/main/${id}`);
 	},
 	render() {
 		return (
 			<div id='conversation-list'>
 				{this.props.conversations.map((conversation, i) => {
-					console.log(conversation);
 					return (
 						<div key={`c${i}`} className='conversation-list-item'>
 							<h2>{ conversation.title }</h2>

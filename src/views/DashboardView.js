@@ -18,12 +18,10 @@ const DashboardView = React.createClass({
 			},
 			credentials: 'include'
 		}).then((res) => {
-			console.log(res);
 			if(res.status == 200) {
 				return res.json();
 			}
 		}).then((json) => {
-			console.log(json);
 			this.setState({
 				conversations: json
 			});

@@ -14,7 +14,6 @@ const CreateView = React.createClass({
 				content: this.refs.message.value
 			})
 		}).then((res) => {
-			console.log(res);
 			if(res.status == 200) {
 				browserHistory.push('/dashboard');
 			}
