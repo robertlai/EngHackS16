@@ -94,7 +94,7 @@ const MainView = React.createClass({
 			.links(this.realJSONNodes.links)
 			.size([width,height])
 			.charge(-10000)
-			.linkDistance(50)
+			.linkDistance(20)
 			.on("tick", tick);
 
 		var node = svg.select('.nodes').selectAll('.node');
