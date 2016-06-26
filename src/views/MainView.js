@@ -37,13 +37,42 @@ const MainView = React.createClass({
 			node._children.forEach((child) => {
 				socket.emit('getChildren', child._id);
 
+				  var text = jquery('<span">'+child.content+'</span>').css({ fontFamily: 'sans-serif','font-size':'20px' });
+				  var block = jquery('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
+
+				  var div = jquery('<div style="width:200px"></div>');
+				  div.append(text, block);
+
+				  var body = jquery('body');
+				  body.append(div);
+
+				  try {
+
+				    var result = {};
+
+				    block.css({ verticalAlign: 'baseline' });
+				    result.ascent = block.offset().top - text.offset().top;
+
+				    block.css({ verticalAlign: 'bottom' });
+				    result.height = block.offset().top - text.offset().top;
+
+				    result.descent = result.height - result.ascent;
+
+				  } finally {
+				    div.remove();
+				  }
+
+				  var widt = ctx.measureText(child.content.replace(/ +(?= )/g,'')).width + 40;
+				  if (widt>200) {
+				  	widt = 200;
+				  }
 				this.realJSONNodes.nodes.push({
 					"_id": child._id,
 					"text": child.content,
-					"size": 12,
 					"x": 0,
 					"y": 0,
-					"width": ctx.measureText(child.content.replace(/ +(?= )/g,'')).width + 40
+					"width": widt,
+					"height": result.height + 20
 				});
 				this.realJSONNodes.links.push({
 					"source": _.findIndex(this.realJSONNodes.nodes, (lookingAt) => {
@@ -73,10 +102,10 @@ const MainView = React.createClass({
 			this.realJSONNodes.nodes.push({
 				"_id": this.props.params.cid,
 				"text": "root node",
-				"size": 12,
 				"x": 0,
 				"y": 0,
-				"width": ctx.measureText("root node".replace(/ +(?= )/g,'')).width + 40
+				"width": ctx.measureText("root node".replace(/ +(?= )/g,'')).width + 40,
+				"height": 40
 			});
 			socket.emit('getChildren', this.props.params.cid);
 		});
@@ -90,7 +119,7 @@ const MainView = React.createClass({
 
 		// d3 stuff
 		var color = d3.scale.category20();
-		var radius = d3.scale.sqrt().range([20, 30]);
+		//var radius = d3.scale.sqrt().range([20, 30]);
 
 		var zoom = d3.behavior.zoom()
 			.scaleExtent([0.1, 1])
@@ -152,6 +181,31 @@ const MainView = React.createClass({
 		var node = svg.select('.nodes').selectAll('.node');
 		var link = svg.select('.links').selectAll('.link');
 
+		function wrap(text, width, cb) {
+			var count = 1;
+		  	text.each(function() {
+			var text = d3.select(this),
+				words = text.text().split(/\s+/).reverse(),
+				word,
+				line = [],
+				y = text.attr("y"),
+				dy = parseFloat(text.attr("dy")),
+				tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+			while (word = words.pop()) {
+			  line.push(word);
+			  tspan.text(line.join(" "));
+			  if (tspan.node().getComputedTextLength() > width) {
+				line.pop();
+				tspan.text(line.join(" "));
+				line = [word];
+				tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", dy * 3 + "em").text(word);
+				++count;
+			  }
+			}
+			cb(count);
+		  });
+		}
+
 		this.createGraph = () => {
 
 			link = link.data(this.realJSONNodes.links);
@@ -177,14 +231,15 @@ const MainView = React.createClass({
 					d3.select(this).append("rect")
 						.attr('rx',5)
 						.attr('ry',5)
-						.style("transform", function(d) { return 'translate(-' + d.width/ 2 + 'px,-'+radius(d.size)/2+'px)';})
+						.style("transform", function(d) { return 'translate(-' + d.width/ 2 + 'px,-23px)';})
 						.attr("width", function(d) { return d.width; })
-						.attr("height", function(d) { return radius(d.size); })
+						.attr("height", function(d) { return d.height; })
 
 					d3.select(this).append("text")
 					   .attr("dy", ".35em")
 					   .attr("text-anchor", "middle")
-					   .text(function(d) { return d.text; });
+					   .text(function(d) { return d.text; })
+					   .call(wrap, 200, (height) => {});
 				});
 			node.exit().remove();
 
