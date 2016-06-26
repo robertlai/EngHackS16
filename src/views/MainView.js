@@ -63,6 +63,9 @@ const MainView = React.createClass({
 					.call(zoom)
 					.append('g');
 
+		svg.append("g").attr("class", "links");
+		svg.append("g").attr("class", "nodes");
+
 		var tick = function() {
 			link.selectAll("line")
 	        .attr("x1", function(d) { return d.source.x; })
@@ -81,8 +84,8 @@ const MainView = React.createClass({
 			.linkDistance(50)
 			.on("tick", tick);
 
-		var node = svg.selectAll('.node');
-		var link = svg.selectAll('.link');
+		var node = svg.select('.nodes').selectAll('.node');
+		var link = svg.select('.links').selectAll('.link');
 
 		createGraph();
 
