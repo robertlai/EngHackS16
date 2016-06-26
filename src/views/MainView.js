@@ -47,6 +47,14 @@ const MainView = React.createClass({
 						return lookingAt._id == child._id;
 					}),
 				});
+				if(node.doIt && node._owner == this.user._id) {
+					this.createGraph();
+					if(self.messageSelected) {
+						self.messageSelected.classed('selectedNode', false);
+					}
+					this.messageSelected = d3.select(jquery(`#${child._id}`).get(0)).select("rect").classed('selectedNode', true);
+					this.messageSelectedId = child._id;
+				}
 				socket.emit('getChildren', child._id);
 			});
 			this.createGraph();
