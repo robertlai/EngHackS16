@@ -26,7 +26,7 @@ const MainView = React.createClass({
 		var radius = d3.scale.sqrt().range([20, 30]);
 
 		var zoom = d3.behavior.zoom()
-		    .scaleExtent([1, 3])
+		    .scaleExtent([0.1, 1])
 		    .on("zoom", zoomed);
 
 		var fakeJSONfile = {};
