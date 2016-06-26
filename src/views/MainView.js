@@ -7,18 +7,29 @@ import jquery from 'jquery';
 import io from 'socket.io-client';
 import {getUser} from 'core/utils';
 
+var socket = require('socket.io-client')();
+
 const MainView = React.createClass({
-	socket: io(),
+	shouldComponentUpdate() {
+		return false;
+	},
 	componentDidMount() {
-		console.log(this.socket);
-		this.socket.on('setGroupId', (groupId) => {
-			console.log('OK');
+		console.log(socket);
+		socket.on('receivedChildren', (children) => {
+			children.forEach((child) => {
+				socket.emit('getChildren', child._id);
+				console.log(child.content);
+			});
 		});
-		this.socket.on('notAllowed', () => {
+		socket.on('setGroupId', (groupId) => {
+			console.log('OK');
+			socket.emit('getChildren', '576f5d5ddde7cca0315ca322');
+		});
+		socket.on('notAllowed', () => {
 			console.log('NOT OK');
 		});
 		getUser().then((json) => {
-			this.socket.emit('conversationConnect', json.user);
+			socket.emit('conversationConnect', json.user);
 		});
 
 		// d3 stuff
@@ -26,7 +37,7 @@ const MainView = React.createClass({
 		var radius = d3.scale.sqrt().range([20, 30]);
 
 		var zoom = d3.behavior.zoom()
-		    .scaleExtent([1, 3])
+		    .scaleExtent([0.1, 1])
 		    .on("zoom", zoomed);
 
 		var fakeJSONfile = {};
@@ -52,6 +63,9 @@ const MainView = React.createClass({
 					.call(zoom)
 					.append('g');
 
+		svg.append("g").attr("class", "links");
+		svg.append("g").attr("class", "nodes");
+
 		var tick = function() {
 			link.selectAll("line")
 	        .attr("x1", function(d) { return d.source.x; })
@@ -70,8 +84,8 @@ const MainView = React.createClass({
 			.linkDistance(50)
 			.on("tick", tick);
 
-		var node = svg.selectAll('.node');
-		var link = svg.selectAll('.link');
+		var node = svg.select('.nodes').selectAll('.node');
+		var link = svg.select('.links').selectAll('.link');
 
 		createGraph();
 
