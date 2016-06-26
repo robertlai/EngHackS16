@@ -7,14 +7,12 @@ module.exports = (io) ->
 
     addNewMessage = (req, res, next) ->
 
-        console.log req.body
-
         _newMessageParent = mongoose.Types.ObjectId(req.body._parent)
         newMessageContent = req.body.messageContent
         newMessageChildren = []
 
         MessageRepo.createNewMessage {
-            # _user: req.user._id
+            # _owner: req.user._id
             content: newMessageContent
             _children: newMessageChildren
         }, (err, newMessage) ->
@@ -24,6 +22,16 @@ module.exports = (io) ->
                 # io.sockets.in(_group).emit('newMessage', newMessage)
                 res.sendStatus(201)
 
+
+    getChildren = (req, res, next) ->
+
+        _parent = mongoose.Types.ObjectId(req.body._parent)
+
+        MessageRepo.getChildrenOfNode _parent, (err, allNodes) ->
+            return next(err) if err
+            res.json(allNodes)
+
     {
         addNewMessage: addNewMessage
+        getChildren: getChildren
     }
