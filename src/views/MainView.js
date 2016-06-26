@@ -4,9 +4,24 @@ import Message from 'components/message';
 import InputBox from 'components/inputBox';
 import d3 from 'd3';
 import jquery from 'jquery';
+import io from 'socket.io-client';
+import {getUser} from 'core/utils';
 
 const MainView = React.createClass({
+	socket: io(),
 	componentDidMount() {
+		console.log(this.socket);
+		this.socket.on('setGroupId', (groupId) => {
+			console.log('OK');
+		});
+		this.socket.on('notAllowed', () => {
+			console.log('NOT OK');
+		});
+		getUser().then((json) => {
+			this.socket.emit('conversationConnect', json.user);
+		});
+
+		// d3 stuff
 		var color = d3.scale.category20();
 		var radius = d3.scale.sqrt().range([20, 30]);
 

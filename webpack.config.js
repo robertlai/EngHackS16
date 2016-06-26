@@ -66,7 +66,6 @@ const webpackConfig = {
 	},
 	module: {
 		noParse: [
-			path.resolve(__dirname, 'assets/font'),
 			path.resolve(__dirname, 'node_modules/lodash/index.js')
 		],
 		loaders: [
@@ -128,7 +127,6 @@ const webpackConfig = {
 		root: [
 			path.resolve(__dirname, 'src'),
 			path.resolve(__dirname, 'assets/styles/sass'),
-			path.resolve(__dirname, 'assets/font/icons'),
 			path.resolve(__dirname, 'assets'),
 			path.resolve(__dirname, 'node_modules')
 		],
