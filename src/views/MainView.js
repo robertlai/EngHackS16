@@ -72,7 +72,7 @@ const MainView = React.createClass({
 
 		var node = svg.selectAll('.node');
 		var link = svg.selectAll('.link');
-		
+
 		createGraph();
 
 		function createGraph() {
@@ -114,11 +114,10 @@ const MainView = React.createClass({
 			force.start();
 		}
 
-		function addMessage() {
-			var newMessage = {"atom": "C", "size": 12, x: 0, y: 0};
+		function addMessage(e) {
+			var newMessage = {"atom": "C", "size": 12, x: e.x, y: e.y};
 		  	fakeJSONfile.nodes.push(newMessage);
-		 	//var targetNode = nodes[atomSelected[0][0].parentNode.__data__.index]; //could probs be simplified
-		  	fakeJSONfile.links.push({source: newMessage, target: 0});
+		 	fakeJSONfile.links.push({source: newMessage, target: e.index});
 	  		createGraph();
 		}
 
