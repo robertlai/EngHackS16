@@ -9,7 +9,7 @@ const DashboardView = React.createClass({
 		};
 	},
 	componentDidMount() {
-		fetch('/api/conversations', {
+		fetch('/api/conversations/all', {
 			method: 'GET',
 			headers: {
 				'Accept': 'application/json',
