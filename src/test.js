@@ -13,6 +13,14 @@ module.exports = {
 		{
 			text: 'test2',
 			children:[]
+		},
+		{
+			text: 'test3',
+			children:[]
+		},
+		{
+			text: 'test4',
+			children:[]
 		}
 	]
 };

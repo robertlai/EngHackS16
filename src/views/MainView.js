@@ -8,7 +8,14 @@ const MainView = React.createClass({
 		return (
 			<div>
 				<InputBox />
-				<Message {...test}/>
+				<div id='root-message-anchor'>
+					<Message
+						{...test}
+						selfAngle={Math.PI}
+						index={0}
+						nodeCount={1}
+					/>
+				</div>
 			</div>
 		);
 	}

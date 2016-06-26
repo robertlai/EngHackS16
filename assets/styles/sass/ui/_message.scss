@@ -1,3 +1,17 @@
+.messageContainer {
+	position: relative;
+	width: 0;
+	height: 0;
+	overflow: visible;
+}
+
 .message {
 	border: 1px solid black;
+	font-size: 15px;
+	display: inline-block;
+	min-width: 100px;
+	border-radius: 5px;
+	text-align: center;
+	position: absolute;
+	transform: translateX(-50%) translateY(-50%);
 }
