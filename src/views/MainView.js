@@ -28,6 +28,8 @@ const MainView = React.createClass({
 		}
 	},
 	componentDidMount() {
+		this.refs.inputBox.focus();
+
 		socket.on('receivedChildren', (node) => {
 			node._children.forEach((child) => {
 				this.realJSONNodes.nodes.push({
@@ -182,7 +184,20 @@ const MainView = React.createClass({
 			<div>
 				<div id='root-message-anchor'></div>
 				<div id='bottom-bar'>
-					<input id='message-text-box' type='text' ref='inputBox'/>
+					<input
+						id='message-text-box'
+						type='text'
+						ref='inputBox'
+						autoComplete='off'
+						onKeyPress={ (e) => {
+							if(e.key == 'Enter') {
+								this.addNewMessage();
+							}
+						}}
+						onBlur={ () => {
+							setTimeout(() => { this.refs.inputBox.focus(); }, 20);
+						}}
+					/>
 					<button id='send-message-button' onClick={this.addNewMessage}>Send</button>
 				</div>
 			</div>
