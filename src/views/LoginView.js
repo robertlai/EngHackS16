@@ -32,7 +32,7 @@ const LoginView = React.createClass({
 				})
 			}).then((res) => {
 				if(res.status == 200) {
-					browserHistory.push('/main');
+					browserHistory.push('/dashboard');
 				}
 			});
 		}
