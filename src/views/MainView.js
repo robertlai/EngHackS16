@@ -19,6 +19,14 @@ const MainView = React.createClass({
 		links: []
 	},
 	messageSelected: null,
+	messageSelectedId: null,
+	addNewMessage() {
+		console.log(this.messageSelectedId);
+		if(this.messageSelectedId) {
+			socket.emit('newMessage', this.messageSelectedId, this.refs.inputBox.value);
+		}
+		// socket.emit('newMessage', messageSelected[0], )
+	},
 	componentDidMount() {
 		socket.on('receivedChildren', (node) => {
 			node._children.forEach((child) => {
@@ -70,11 +78,15 @@ const MainView = React.createClass({
 		var width = window.innerWidth;
 		var height = window.innerHeight;
 
+		var self = this;
+
 		var messageClicked = function (message) {
-			if (self.messageSelected) {
+			if(self.messageSelected) {
 				self.messageSelected.classed('selectedNode', false);
 			}
 		 	self.messageSelected = d3.select(this).select("rect").classed('selectedNode', true);
+		 	console.log(message);
+		 	self.messageSelectedId = message._id;
 		};
 
 		var svg = d3.select('#root-message-anchor')
@@ -145,8 +157,6 @@ const MainView = React.createClass({
 			force.start();
 		}
 
-		// setInterval(createGraph, 300);
-
 		function addMessage(e) {
 			var newMessage = {"atom": "C", "size": 12, x: e.x, y: e.y};
 		  	this.realJSONNodes.nodes.push(newMessage);
@@ -161,8 +171,11 @@ const MainView = React.createClass({
 	render() {
 		return (
 			<div>
-				<InputBox />
 				<div id='root-message-anchor'></div>
+				<div id='bottom-bar'>
+					<input id='message-text-box' type='text' ref='inputBox'/>
+					<button id='send-message-button' onClick={this.addNewMessage}>Send</button>
+				</div>
 			</div>
 		);
 	}
