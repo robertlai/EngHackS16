@@ -15,6 +15,9 @@ const CreateView = React.createClass({
 			})
 		}).then((res) => {
 			console.log(res);
+			if(res.status == 200) {
+				browserHistory.push('/dashboard');
+			}
 		});
 	},
 	render() {
