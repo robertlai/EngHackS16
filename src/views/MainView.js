@@ -8,7 +8,7 @@ import jquery from 'jquery';
 const MainView = React.createClass({
 	componentDidMount() {
 		var color = d3.scale.category20();
-		var radius = d3.scale.sqrt().range([10, 20]);
+		var radius = d3.scale.sqrt().range([20, 30]);
 
 		var zoom = d3.behavior.zoom()
 		    .scaleExtent([1, 3])
@@ -55,35 +55,57 @@ const MainView = React.createClass({
 			.linkDistance(50)
 			.on("tick", tick);
 
-		var link = svg.selectAll('.link').data(fakeJSONfile.links);
+		var node = svg.selectAll('.node');
+		var link = svg.selectAll('.link');
+		
+		createGraph();
 
-		link.enter()
-			.append('g')
-			.attr('class','link')
-			.each(function(d) {
-	  			d3.select(this).insert("line", ".node")
-	  				.style("stroke-width", "3px");
+		function createGraph() {
 
-	  		});
-		link.exit().remove();
+			link = link.data(fakeJSONfile.links);
 
-		var node = svg.selectAll('.node').data(fakeJSONfile.nodes);
+			link.enter()
+				.append('g')
+				.attr('class','link')
+				.each(function(d) {
+		  			d3.select(this).insert("line", ".node")
+		  				.style("stroke-width", "3px");
 
-		node.enter()
-			.append('g')
-			.attr('class','node')
-			.each(function(d) {
-				d3.select(this).append("rect")
-					.attr('rx',5)
-					.attr('ry',5)
-					.style("transform", function(d) { return 'translate(-' + radius(d.size) / 2 + 'px)';})
-					.attr("width", function(d) { return radius(d.size); })
-					.attr("height", function(d) { return radius(d.size); })
-					.style("fill", function(d) { return color(d.atom); });
-			});
-		node.exit().remove();
+		  		});
+			link.exit().remove();
 
-		force.start();
+			node = node.data(fakeJSONfile.nodes);
+
+			node.enter()
+				.append('g')
+				.attr('class','node')
+				.on("click", addMessage)
+				.each(function(d) {
+					d3.select(this).append("rect")
+						.attr('rx',5)
+						.attr('ry',5)
+						.style("transform", function(d) { return 'translate(-' + radius(d.size) / 2 + 'px)';})
+						.attr("width", function(d) { return radius(d.size)*5; })
+						.attr("height", function(d) { return radius(d.size); })
+						.style("fill", function(d) { return color(d.atom); });
+
+					d3.select(this).append("text")
+				       .attr("dy", ".35em")
+				       .attr("text-anchor", "middle")
+				       .text(function(d) { return d.atom; });
+				});
+			node.exit().remove();
+
+			force.start();
+		}
+
+		function addMessage() {
+			var newMessage = {"atom": "C", "size": 12, x: 0, y: 0};
+		  	fakeJSONfile.nodes.push(newMessage);
+		 	//var targetNode = nodes[atomSelected[0][0].parentNode.__data__.index]; //could probs be simplified
+		  	fakeJSONfile.links.push({source: newMessage, target: 0});
+	  		createGraph();
+		}
 
 		function zoomed() {
 		  svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
