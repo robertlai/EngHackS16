@@ -18,6 +18,7 @@ const MainView = React.createClass({
 		nodes: [],
 		links: []
 	},
+	messageSelected: null,
 	componentDidMount() {
 		socket.on('receivedChildren', (node) => {
 			node._children.forEach((child) => {
@@ -69,6 +70,13 @@ const MainView = React.createClass({
 		var width = window.innerWidth;
 		var height = window.innerHeight;
 
+		var messageClicked = function (message) {
+			if (self.messageSelected) {
+				self.messageSelected.classed('selectedNode', false);
+			}
+		 	self.messageSelected = d3.select(this).select("rect").classed('selectedNode', true);
+		};
+
 		var svg = d3.select('#root-message-anchor')
 					.append('svg')
 					.attr("width",width)
@@ -118,7 +126,7 @@ const MainView = React.createClass({
 			node.enter()
 				.append('g')
 				.attr('class','node')
-				.on("click", addMessage)
+				.on("click", messageClicked)
 				.each(function(d) {
 					d3.select(this).append("rect")
 						.attr('rx',5)
