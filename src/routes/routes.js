@@ -25,6 +25,7 @@ const checkAuth = (nextState, replace, callback) => {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
+				credentials: 'include',
 				body: JSON.stringify({
 
 				})
