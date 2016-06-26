@@ -66,23 +66,23 @@ const MainView = React.createClass({
 			this.createGraph();
 		});
 
-		socket.on('setGroupId', (groupId) => {
+		socket.on('setRoutNode', (rootNode) => {
 			this.realJSONNodes.nodes.push({
-				"_id": this.props.params.cid,
-				"text": "root node",
+				"_id": rootNode._id,
+				"text": rootNode.content,
 				"size": 12,
 				"x": 0,
 				"y": 0,
-				"width": ctx.measureText("root node".replace(/ +(?= )/g,'')).width + 40
+				"width": ctx.measureText(rootNode.content.replace(/ +(?= )/g,'')).width + 40
 			});
-			socket.emit('getChildren', this.props.params.cid);
+			socket.emit('getChildren', rootNode._id);
 		});
 		// socket.on('notAllowed', () => {
 		// 	console.log('NOT OK');
 		// });
 		getUser().then((json) => {
 			this.user = json.user;
-			socket.emit('conversationConnect', json.user);
+			socket.emit('conversationConnect', json.user, this.props.params.cid);
 		});
 
 		// d3 stuff
