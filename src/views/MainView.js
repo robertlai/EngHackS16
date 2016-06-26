@@ -52,13 +52,13 @@ const MainView = React.createClass({
 		socket.on('setGroupId', (groupId) => {
 			console.log('OK');
 			this.realJSONNodes.nodes.push({
-				"_id": "576f60e8266ba3c40ab80788",
+				"_id": "576f871b8fbcefd0249f0ddb",
 				"atom": "root node",
 				"size": 12,
 				"x": 0,
 				"y": 0,
 			});
-			socket.emit('getChildren', '576f60e8266ba3c40ab80788');
+			socket.emit('getChildren', '576f871b8fbcefd0249f0ddb');
 		});
 		socket.on('notAllowed', () => {
 			console.log('NOT OK');
@@ -81,6 +81,7 @@ const MainView = React.createClass({
 		var self = this;
 
 		var messageClicked = function (message) {
+			if (d3.event.defaultPrevented) return;
 			if(self.messageSelected) {
 				self.messageSelected.classed('selectedNode', false);
 			}
@@ -117,9 +118,13 @@ const MainView = React.createClass({
 			.linkDistance(20)
 			.on("tick", tick);
 
+		var drag = force.drag()
+		    .on("dragstart", function() {
+		    	d3.event.sourceEvent.stopPropagation();
+		    });
+
 		var node = svg.select('.nodes').selectAll('.node');
 		var link = svg.select('.links').selectAll('.link');
-
 
 		this.createGraph = () => {
 
