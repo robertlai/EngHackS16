@@ -21,11 +21,11 @@ const MainView = React.createClass({
 	messageSelected: null,
 	messageSelectedId: null,
 	addNewMessage() {
-		console.log(this.messageSelectedId);
-		if(this.messageSelectedId) {
-			socket.emit('newMessage', this.messageSelectedId, this.refs.inputBox.value);
+		let text = this.refs.inputBox.value.trim();
+		if(this.messageSelectedId && text != '') {
+			socket.emit('newMessage', this.messageSelectedId, text);
+			this.refs.inputBox.value = '';
 		}
-		// socket.emit('newMessage', messageSelected[0], )
 	},
 	componentDidMount() {
 		socket.on('receivedChildren', (node) => {
