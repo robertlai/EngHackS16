@@ -23,8 +23,8 @@ const TopBar = React.createClass({
 	render() {
 		return (
 			<div id='topbar'>
-				<button onClick={this.handleNewConversation}>Create a new conversation</button>
-				<button onClick={this.handleLogout}>Logout</button>
+				<button id='create-button' onClick={this.handleNewConversation}>Create a new conversation</button>
+				<button id='logout-button' onClick={this.handleLogout}>Logout</button>
 			</div>
 		);
 	}

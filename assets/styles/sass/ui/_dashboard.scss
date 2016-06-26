@@ -1,0 +1,32 @@
+#dashboard-container {
+	overflow: hidden;
+	#topbar {
+		height: 30px;
+
+		#logout-button {
+			float: right;
+		}
+	}
+
+	#conversation-list {
+		position: absolute;
+		box-shadow: 0 -3px 2px #AAAAAA;
+		height: calc(100% - 46px);
+		width: 100%;
+		overflow-y: scroll;
+		padding: 8px;
+
+		.conversation-list-item {
+			margin: 2px;
+			border-bottom: 1px solid $primary-green;
+
+			h1, button {
+				display: inline;
+			}
+
+			button {
+				float: right;
+			}
+		}
+	}
+}

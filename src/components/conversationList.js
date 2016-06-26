@@ -16,7 +16,7 @@ const ConversationList = React.createClass({
 				{this.props.conversations.map((conversation, i) => {
 					return (
 						<div key={`c${i}`} className='conversation-list-item'>
-							<h2>{ conversation.title }</h2>
+							<h1>{ conversation.title }</h1>
 							<button onClick={this.handleClick.bind(this, conversation._rootNode)}>Enter</button>
 						</div>
 					);
