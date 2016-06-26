@@ -4,7 +4,8 @@
   "description": "xd",
   "dependencies": {
     "cross-env": "1.0.7",
-    "lodash": "3.10.1"
+    "lodash": "3.10.1",
+    "request": "2.69.0"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=production coffee app.coffee",

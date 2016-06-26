@@ -5,6 +5,7 @@ passport = require('passport')
 module.exports = express.Router()
 
 .post '/login', (req, res, next) ->
+    console.log(req.body);
     passport.authenticate('login', (error, user, message) ->
         if error?
             res.sendStatus(500).json({ error: error })
