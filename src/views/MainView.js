@@ -7,18 +7,29 @@ import jquery from 'jquery';
 import io from 'socket.io-client';
 import {getUser} from 'core/utils';
 
+var socket = require('socket.io-client')();
+
 const MainView = React.createClass({
-	socket: io(),
+	shouldComponentUpdate() {
+		return false;
+	},
 	componentDidMount() {
-		console.log(this.socket);
-		this.socket.on('setGroupId', (groupId) => {
-			console.log('OK');
+		console.log(socket);
+		socket.on('receivedChildren', (children) => {
+			children.forEach((child) => {
+				socket.emit('getChildren', child._id);
+				console.log(child.content);
+			});
 		});
-		this.socket.on('notAllowed', () => {
+		socket.on('setGroupId', (groupId) => {
+			console.log('OK');
+			socket.emit('getChildren', '576f5d5ddde7cca0315ca322');
+		});
+		socket.on('notAllowed', () => {
 			console.log('NOT OK');
 		});
 		getUser().then((json) => {
-			this.socket.emit('conversationConnect', json.user);
+			socket.emit('conversationConnect', json.user);
 		});
 
 		// d3 stuff
