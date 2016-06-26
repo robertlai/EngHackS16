@@ -32,12 +32,18 @@ const MainView = React.createClass({
 
 		socket.on('receivedChildren', (node) => {
 			node._children.forEach((child) => {
+
+				var c=document.createElement('canvas');
+			  	var ctx=c.getContext('2d');
+			  	ctx.font =  '20px sans-serif';
+
 				this.realJSONNodes.nodes.push({
 					"_id": child._id,
 					"text": child.content,
 					"size": 12,
 					"x": 0,
 					"y": 0,
+					"width": ctx.measureText(child.content.replace(/ +(?= )/g,'')).width + 40
 				});
 				this.realJSONNodes.links.push({
 					"source": _.findIndex(this.realJSONNodes.nodes, (lookingAt) => {
@@ -152,8 +158,8 @@ const MainView = React.createClass({
 					d3.select(this).append("rect")
 						.attr('rx',5)
 						.attr('ry',5)
-						.style("transform", function(d) { return 'translate(-' + radius(d.size) * 5/ 2 + 'px,-'+radius(d.size)/2+'px)';})
-						.attr("width", function(d) { return radius(d.size)*5; })
+						.style("transform", function(d) { return 'translate(-' + d.width/ 2 + 'px,-'+radius(d.size)/2+'px)';})
+						.attr("width", function(d) { return d.width; })
 						.attr("height", function(d) { return radius(d.size); })
 
 					d3.select(this).append("text")
