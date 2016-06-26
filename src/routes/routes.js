@@ -2,6 +2,8 @@ import React from 'react';
 import { Router, Route, Link, browserHistory } from 'react-router';
 import MainView from 'views/MainView';
 import LoginView from 'views/LoginView';
+import RegisterView from 'views/RegisterView';
+import MessageView from 'views/MessageView';
 
 // const Routes = (
 // 	<Router history={history} routes={{
@@ -18,6 +20,7 @@ import LoginView from 'views/LoginView';
 const Routes = (
 	<Router history={browserHistory}>
 		<Route path="/login" component={LoginView}/>
+		<Route path="/register" component={RegisterView}/>
 		<Route path="/main" component={MainView}/>
 	</Router>
 );

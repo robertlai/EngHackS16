@@ -1,24 +1,60 @@
+import 'whatwg-fetch';
 import React from 'react';
+import {Link } from 'react-router';
+
+import Form from 'forms/Form';
+import SigninFormSchema from 'forms/schemas/SigninFormSchema';
 
 const LoginView = React.createClass({
 	getInitialState() {
 		return {
-			someText: 'hi'
+			validationEnabled: false
 		};
 	},
-	handleSubmit() {
-		this.setState({
-			someText: 'hello'
-		});
+	handleSubmit(e) {
+		e.preventDefault();
+
+	    const { form } = this.refs;
+
+	    if(form.validate()) {
+	      const { username, password } = form.getValue();
+	      const { dispatch } = this.props;
+
+	      fetch('/auth/login', {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					username: username,
+					password: password
+				})
+			}).then((res) => {
+				console.log(res);
+				if(res.status != 200) {
+
+				}
+			});
+	    }
+
+	    this.setState({
+	      validationEnabled: true,
+	    });
 	},
 	render() {
 		return (
 			<div id="login-box">
-				<h1>Login</h1>
-				<input type="text"/>
-				<input type="text"/>
-				<button id="submit-button" onClick={this.handleSubmit}/>
-				{ this.state.someText }
+				<form id='auth_form'>
+					<h1>Login</h1>
+					<Form
+			            ref='form'
+			            schema={SigninFormSchema}
+			            validationEnabled={this.state.validationEnabled}
+			          />
+					<button id="submit-button" onClick={this.handleSubmit}/>
+				</form>
+        		<Link to='/sign_up'>Create new account</Link>
 			</div>
 		);
 	}
