@@ -23,7 +23,7 @@ const MainView = React.createClass({
 	addNewMessage() {
 		let text = this.refs.inputBox.value.trim();
 		if(this.messageSelectedId && text != '') {
-			socket.emit('newMessage', this.messageSelectedId, text);
+			socket.emit('newMessage', this.messageSelectedId, text, this.user._id);
 			this.refs.inputBox.value = '';
 		}
 	},
@@ -45,9 +45,9 @@ const MainView = React.createClass({
 						return lookingAt._id == child._id;
 					}),
 				});
-				this.createGraph();
 				socket.emit('getChildren', child._id);
 			});
+			this.createGraph();
 		});
 		socket.on('setGroupId', (groupId) => {
 			console.log('OK');
@@ -64,6 +64,7 @@ const MainView = React.createClass({
 			console.log('NOT OK');
 		});
 		getUser().then((json) => {
+			this.user = json.user;
 			socket.emit('conversationConnect', json.user);
 		});
 
@@ -143,6 +144,9 @@ const MainView = React.createClass({
 			node.enter()
 				.append('g')
 				.attr('class','node')
+				.attr('id', (d) => {
+					return d._id;
+				})
 				.on("click", messageClicked)
 				.each(function(d) {
 					d3.select(this).append("rect")

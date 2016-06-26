@@ -4,8 +4,8 @@ module.exports = (io) ->
 
     io.on 'connection', (socket) ->
 
-        socket.on 'conversationConnect', (user, _group) ->
-            socket.emit('setGroupId', _group)
+        socket.on 'conversationConnect', (user) ->
+            socket.emit('setGroupId')
             # if not err and _members? and _members.indexOf(user._id) isnt -1
             #     socket.join(_group)
             #     socket.emit('setGroupId', _group)
@@ -28,5 +28,6 @@ module.exports = (io) ->
                         _id: _newMessageParent
                         _children: [newMessage]
                     }
+                    socket.emit 'newFocus', newMessage._id
                     MessageRepo.addMessageAsChild _newMessageParent, newMessage._id, (err) ->
                         return next(err) if err
