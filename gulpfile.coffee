@@ -22,7 +22,7 @@ gulp.task 'coffeelint', ->
         .pipe(coffeelint.reporter())
 
 gulp.task 'dev', ->
-    process.env.NODE_ENV = 'dev2'
+    process.env.NODE_ENV = 'production'
     nodemon({
         script: 'server.coffee'
     })
