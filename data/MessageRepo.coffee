@@ -4,7 +4,10 @@ User = require('./models/User')
 
 createNewMessage = (options, next) ->
     new Message(options)
-        .save next
+        .populate('_owner')
+        .save (err, newMessage) ->
+            next(err) if err?
+            Message.populate(newMessage, { path: '_owner', model: 'user', select: 'username' }, next)
 
 addMessageAsChild = (_parent, _messageToAdd, next) ->
     Message.findByIdAndUpdate _parent,

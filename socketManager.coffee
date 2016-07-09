@@ -9,8 +9,8 @@ module.exports = (io) ->
             socket.join(_conversation)
 
             MessageRepo.getNode _conversation, (err, rootNode) ->
-                return next(err) if err
-                socket.emit('setRoutNode', rootNode)
+                return console.log err if err
+                socket.emit('setRootNode', rootNode)
 
             socket.on 'getChildren', (_parent) ->
                 MessageRepo.getChildrenOfNode _parent, (err, nodeWithChildren) ->
@@ -23,14 +23,13 @@ module.exports = (io) ->
                     content: newMessageContent
                     _children: []
                 }, (err, newMessage) ->
-                    return next(err) if err
+                    return console.log err if err
 
-                    io.emit 'receivedChildren', {
+                    io.sockets.in(_conversation).emit 'receivedChildren', {
                         _id: _newMessageParent
                         _owner: _user
                         _children: [newMessage]
-                        doIt: true
+                        isLiveMessage: true
                     }
-                    socket.emit 'newFocus', newMessage._id
                     MessageRepo.addMessageAsChild _newMessageParent, newMessage._id, (err) ->
-                        return next(err) if err
+                        return console.log err if err

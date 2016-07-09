@@ -1,37 +1,77 @@
 import React from 'react';
-import test from '../test';
-import Message from 'components/message';
-import InputBox from 'components/inputBox';
 import d3 from 'd3';
 import jquery from 'jquery';
 import io from 'socket.io-client';
 import {getUser} from 'core/utils';
 import _ from 'lodash';
 
-var socket = require('socket.io-client')();
+class MainView extends React.Component {
+	constructor(props) {
+		super(props);
+		this.socket = io();
 
-const MainView = React.createClass({
+		this.realJSONNodes = {
+			nodes: [],
+			links: []
+		};
+
+		this.messageSelected = null;
+		this.messageSelectedId = null;
+
+		this.initSockets();
+	}
+	initSockets() {
+		this.socket.on('receivedChildren', (node) => {
+			node._children.forEach((child) => {
+				this.socket.emit('getChildren', child._id);
+
+				this.realJSONNodes.nodes.push(this.CreateNode(child));
+				this.realJSONNodes.links.push({
+					'source': _.findIndex(this.realJSONNodes.nodes, (lookingAt) => {
+						return lookingAt._id == node._id;
+					}),
+					'target': _.findIndex(this.realJSONNodes.nodes, (lookingAt) => {
+						return lookingAt._id == child._id;
+					})
+				});
+				if(node.isLiveMessage && child._owner._id == this.user._id) {
+					this.createGraph();
+					this.deselectSelectedNode();
+					this.messageSelected = d3.select(jquery(`#${child._id}`).get(0)).select('rect').classed('selectedNode', true);
+					this.messageSelectedId = child._id;
+					var dataTemp = this.messageSelected.datum();
+					dataTemp.fixed = true;
+					this.focusLocation(-dataTemp.x + window.innerWidth / 2, -dataTemp.y + window.innerHeight / 2, true);
+				}
+			});
+			this.createGraph();
+		});
+
+		this.socket.on('setRootNode', (rootNode) => {
+			this.realJSONNodes.nodes.push(this.CreateNode(rootNode));
+			this.socket.emit('getChildren', rootNode._id);
+		});
+
+		getUser().then((json) => {
+			this.user = json.user;
+			this.socket.emit('conversationConnect', json.user, this.props.params.cid);
+		});
+	}
 	shouldComponentUpdate() {
 		return false;
-	},
-	realJSONNodes: {
-		nodes: [],
-		links: []
-	},
-	messageSelected: null,
-	messageSelectedId: null,
+	}
 	addNewMessage() {
 		let text = this.refs.inputBox.value.trim();
 		if(this.messageSelectedId && text != '') {
-			socket.emit('newMessage', this.user._id, this.messageSelectedId, text);
+			this.socket.emit('newMessage', this.user._id, this.messageSelectedId, text);
 			this.refs.inputBox.value = '';
 		}
-	},
+	}
 	componentDidMount() {
 		this.refs.inputBox.focus();
-		var c=document.createElement('canvas');
-		var ctx=c.getContext('2d');
-		ctx.font =  '20px sans-serif';
+		var c = document.createElement('canvas');
+		var ctx = c.getContext('2d');
+		ctx.font = '20px sans-serif';
 
 		function getHeight(textIn) {
 			var text = jquery('<span>' + textIn + '</span>').css({ fontFamily: 'sans-serif','font-size':'20px' });
@@ -61,7 +101,7 @@ const MainView = React.createClass({
 			return result;
 		}
 
-		var CreateNode = (nodeData) => {
+		this.CreateNode = (nodeData) => {
 			return {
 				'_id': nodeData._id,
 				'text': nodeData.content,
@@ -73,42 +113,6 @@ const MainView = React.createClass({
 			};
 		};
 
-		socket.on('receivedChildren', (node) => {
-			node._children.forEach((child) => {
-				socket.emit('getChildren', child._id);
-
-
-				this.realJSONNodes.nodes.push(CreateNode(child));
-				this.realJSONNodes.links.push({
-					'source': _.findIndex(this.realJSONNodes.nodes, (lookingAt) => {
-						return lookingAt._id == node._id;
-					}),
-					'target': _.findIndex(this.realJSONNodes.nodes, (lookingAt) => {
-						return lookingAt._id == child._id;
-					})
-				});
-				if(node.doIt && node._owner._id == this.user._id) {
-					this.createGraph();
-					deselectSelectedNode();
-					this.messageSelected = d3.select(jquery(`#${child._id}`).get(0)).select('rect').classed('selectedNode', true);
-					this.messageSelectedId = child._id;
-					var dataTemp = self.messageSelected.datum();
-					dataTemp.fixed = true;
-					svg.transition().attr('transform', 'translate(' + (-dataTemp.x + window.innerWidth / 2) + ',' + (-dataTemp.y + window.innerHeight / 2) + ')scale(1)');
-				}
-			});
-			this.createGraph();
-		});
-
-		socket.on('setRoutNode', (rootNode) => {
-			this.realJSONNodes.nodes.push(CreateNode(rootNode));
-			socket.emit('getChildren', rootNode._id);
-		});
-		getUser().then((json) => {
-			this.user = json.user;
-			socket.emit('conversationConnect', json.user, this.props.params.cid);
-		});
-
 		// d3 stuff
 		var zoom = d3.behavior.zoom()
 			.scaleExtent([0.01, 1])
@@ -119,30 +123,31 @@ const MainView = React.createClass({
 		var width = window.innerWidth;
 		var height = window.innerHeight;
 
-		var self = this;
-
-		var deselectSelectedNode = function() {
-			if(self.messageSelected) {
-				self.messageSelected.classed('selectedNode', false).attr('fixed',false);
-				self.messageSelected.datum().fixed = false;
-				self.messageSelectedId = null;
+		this.deselectSelectedNode = () => {
+			if(this.messageSelected) {
+				this.messageSelected.classed('selectedNode', false).attr('fixed',false);
+				this.messageSelected.datum().fixed = false;
+				this.messageSelectedId = null;
 			}
 		};
 
-		var messageClicked = function (message) {
-			if (d3.event.defaultPrevented) return;
-			deselectSelectedNode();
+		var self = this;
+
+		var messageClicked = function(message) {
+			if (d3.event.defaultPrevented)
+				return;
+			self.deselectSelectedNode();
 			self.messageSelected = d3.select(this).select('rect').classed('selectedNode', true);
 			self.messageSelectedId = message._id;
 			message.fixed = true;
-			var x = (-message.x+window.innerWidth/2);
-			var y = (-message.y+window.innerHeight/2);
-			svg.transition().attr('transform', 'translate(' + x + ','+ y + ')');
+			var x = (-message.x + window.innerWidth / 2);
+			var y = (-message.y + window.innerHeight / 2);
+			self.focusLocation(x, y);
 		};
 
-		jquery(document).keyup(function(e) {
+		jquery(document).keyup((e) => {
 			if (e.keyCode == 27) {
-				deselectSelectedNode();
+				this.deselectSelectedNode();
 			}
 		});
 
@@ -153,6 +158,10 @@ const MainView = React.createClass({
 					.call(zoom)
 					.on('dblclick.zoom', null)
 					.append('g');
+
+		this.focusLocation = (x, y, scaleTo1) => {
+			svg.transition().attr('transform', 'translate(' + x + ','+ y + ')' + (scaleTo1 ? 'scale(1)' : ''));
+		};
 
 		svg.append('g').attr('class', 'links');
 		svg.append('g').attr('class', 'nodes');
@@ -199,7 +208,7 @@ const MainView = React.createClass({
 						line.pop();
 						tspan.text(line.join(' '));
 						line = [word];
-						tspan = text.append(tspan).attr('x', 0).attr('y', y).attr('dy', dy * 3 + 'em').text(word);
+						tspan = text.append('tspan').attr('x', 0).attr('y', y).attr('dy', dy * 3 + 'em').text(word);
 					}
 				}
 			});
@@ -212,7 +221,7 @@ const MainView = React.createClass({
 			link.enter()
 				.append('g')
 				.attr('class','link')
-				.each(function(d) {
+				.each(function() {
 					d3.select(this).insert('line', '.node');
 				});
 			link.exit().remove();
@@ -227,7 +236,7 @@ const MainView = React.createClass({
 					return d._id;
 				})
 				.on('click', messageClicked)
-				.each(function(d) {
+				.each(function() {
 					d3.select(this).append('rect')
 						.attr('rx',5)
 						.attr('ry',5)
@@ -248,7 +257,7 @@ const MainView = React.createClass({
 			force.start();
 		};
 
-	},
+	}
 	render() {
 		return (
 			<div>
@@ -273,6 +282,6 @@ const MainView = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
 export default MainView;
