@@ -1,7 +1,6 @@
 require('coffee-script').register()
 gulp = require('gulp')
 path = require('path')
-del = require('del')
 coffeelint = require('gulp-coffeelint')
 nodemon = require('gulp-nodemon')
 
